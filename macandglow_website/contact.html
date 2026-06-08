@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contact — Mac & Glow</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<nav id="navbar">
+<div class="nav-inner">
+    <a href="index.html" class="logo">MAC<span>&</span>GLOW</a>
+    <ul class="nav-links" id="navLinks">
+    <li><a href="index.html">Home</a></li><li><a href="shop.html">Shop</a></li>
+    <li><a href="routines.html">Routines</a></li>
+    <li><a href="ingredients.html">Ingredients</a></li>
+    <li><a href="about.html">About</a></li>
+    <li><a href="journal.html">Journal</a></li>
+    </ul>
+    <div class="nav-actions">
+    <button class="icon-btn cart-btn" onclick="toggleCart()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+        <span class="cart-count" id="cartCount">0</span>
+    </button>
+    <button class="hamburger" id="hamburger" onclick="toggleMenu()"><span></span><span></span><span></span></button>
+    </div>
+</div>
+</nav>
+
+<div class="page-header">
+<div class="container">
+    <p class="breadcrumb"><a href="index.html">Home</a> / Contact</p>
+    <p class="eyebrow"><span class="eyebrow-line"></span>Get in Touch</p>
+    <h1 class="section-title">We'd Love to <em>Hear From You</em></h1>
+    <p>Questions about your order? Need skincare advice? Our team is here to help.</p>
+</div>
+</div>
+
+<section class="section">
+<div class="container">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:4rem">
+    <!-- Contact Form -->
+    <div>
+        <form id="contactForm" onsubmit="sendMessage(event)">
+        <div class="form-group">
+            <label>Your Name *</label>
+            <input type="text" id="contactName" required>
+        </div>
+                <div class="form-group">
+            <label>Email Address *</label>
+            <input type="email" id="contactEmail" required>
+        </div>
+        <div class="form-group">
+            <label>Subject *</label>
+            <select id="contactSubject" required>
+            <option value="">Select a subject</option>
+            <option>Order Inquiry</option>
+            <option>Product Question</option>
+            <option>Returns & Exchanges</option>
+            <option>Wholesale Inquiry</option>
+            <option>General Feedback</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label>Message *</label>
+            <textarea id="contactMessage" rows="5" required placeholder="How can we help you?"></textarea>
+        </div>
+        <button type="submit" class="btn-primary" style="width:100%">Send Message →</button>
+        </form>
+    </div>
+
+    <!-- Contact Info -->
+    <div>
+        <div style="background:var(--white);border-radius:var(--radius);padding:2rem;border:1px solid var(--border);margin-bottom:2rem">
+        <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1.5rem">
+            <div style="font-size:1.8rem">📧</div>
+            <div><strong>Email Us</strong><br><small style="color:var(--muted)">hello@macandglow.com</small></div>
+        </div>
+        <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1.5rem">
+            <div style="font-size:1.8rem">📞</div>
+            <div><strong>Call Us</strong><br><small style="color:var(--muted)">+91 98765 43210<br>Mon-Fri, 10 AM - 6 PM IST</small></div>
+        </div>
+        <div style="display:flex;align-items:center;gap:1rem">
+            <div style="font-size:1.8rem">📍</div>
+            <div><strong>Visit Us</strong><br><small style="color:var(--muted)">Mac & Glow Skincare Pvt. Ltd.<br>Sector 62, Noida, Uttar Pradesh - 201301</small></div>
+        </div>
+        </div>
+
+        <div style="background:var(--blush);border-radius:var(--radius);padding:2rem;text-align:center">
+        <div style="font-size:2rem">💬</div>
+        <h3 style="font-family:var(--font-serif);margin:0.5rem 0">FAQ</h3>
+        <p style="font-size:0.85rem;color:var(--muted)">Find answers to common questions about shipping, returns, and products.</p>
+        <button class="btn-ghost" style="margin-top:1rem" onclick="showToast('FAQs coming soon!')">View FAQs →</button>
+        </div>
+    </div>
+    </div>
+</div>
+</section>
+
+<div class="cart-overlay" id="cartOverlay" onclick="toggleCart()"></div>
+<div class="cart-sidebar" id="cartSidebar">
+<div class="cart-header"><h3>Your Cart <span id="cartItemCount">(0)</span></h3><button onclick="toggleCart()">✕</button></div>
+<div class="cart-items" id="cartItems"></div>
+<div class="cart-footer" id="cartFooter" style="display:none"><div class="cart-total"><span>Subtotal</span><strong id="cartTotal">₹0</strong></div><p class="cart-note">Free shipping above ₹699</p><a href="checkout.html" class="btn-primary" style="width:100%;text-align:center;display:block;">Checkout →</a></div>
+</div>
+<div class="toast" id="toast"></div>
+
+<footer style="background:var(--deep);padding:2rem 0;margin-top:3rem">
+<div class="container" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem">
+    <a href="index.html" class="logo" style="color:#FAF7F2">MAC<span style="color:#C4856A">&</span>GLOW</a>
+    <p style="font-size:0.75rem;color:rgba(250,247,242,0.3)">© 2026 Mac & Glow Skincare. All rights reserved.</p>
+</div>
+</footer>
+
+<script src="data.js"></script>
+<script src="api.js"></script>
+<script src="cart.js"></script>
+<script src="main.js"></script>
+<script src="nav.js"></script>
+<script src="chatbot.js"></script>
+<script>
+function sendMessage(e) {
+e.preventDefault();
+const name = document.getElementById('contactName').value;
+const email = document.getElementById('contactEmail').value;
+const subject = document.getElementById('contactSubject').value;
+const message = document.getElementById('contactMessage').value;
+MG_API.sendContact({ name: name, email: email, subject: subject, message: message }).then(function() {
+    showToast('Thanks ' + name + '! We\'ll respond within 24 hours. ✨');
+    document.getElementById('contactForm').reset();
+}).catch(function(err) {
+    showToast(err.message || 'Failed to send message. Please try again.');
+});
+}
+</script>
+</body>
+</html>

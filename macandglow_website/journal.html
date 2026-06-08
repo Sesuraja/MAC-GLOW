@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Journal — Mac & Glow</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<nav id="navbar">
+    <div class="nav-inner">
+        <a href="index.html" class="logo">MAC<span>&</span>GLOW</a>
+        <ul class="nav-links" id="navLinks">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="shop.html">Shop</a></li>
+            <li><a href="routines.html">Routines</a></li>
+            <li><a href="ingredients.html">Ingredients</a></li>
+            <li><a href="about.html">About</a></li>
+            <li><a href="journal.html" class="active">Journal</a></li>
+    </ul>
+    <!-- Nav Actions -->
+    <div class="nav-actions">
+    <button class="icon-btn" aria-label="Search" onclick="toggleSearch()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+    </button>
+<button class="icon-btn" aria-label="Wishlist" onclick="window.location.href='wishlist.html'">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+    </button>
+    <button class="icon-btn cart-btn" aria-label="Cart" onclick="toggleCart()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+        <span class="cart-count" id="cartCount">0</span>
+    </button>
+    
+    <!-- Profile Dropdown -->
+    <div class="profile-dropdown">
+        <button class="icon-btn profile-btn" aria-label="Account" onclick="toggleProfileDropdown(event)">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        </button>
+        <div class="dropdown-content" id="profileDropdown"></div>
+    </div>
+    
+    <button class="hamburger" id="hamburger" aria-label="Menu" onclick="toggleMenu()">
+        <span></span><span></span><span></span>
+    </button>
+    </div>
+</div>
+
+<!-- Search Bar -->
+<div class="search-bar" id="searchBar">
+    <div class="search-inner">
+    <input type="text" placeholder="Search serums, moisturisers, ingredients…" id="searchInput" oninput="handleSearch(this.value)">
+    <button onclick="toggleSearch()">✕</button>
+    </div>
+    <div class="search-results" id="searchResults"></div>
+</nav>
+
+<div class="page-header">
+    <div class="container">
+    <p class="breadcrumb"><a href="index.html">Home</a> / Journal</p>
+    <p class="eyebrow"><span class="eyebrow-line"></span>Stories & Education</p>
+    <h1 class="section-title">The <em>Mac & Glow</em> Journal</h1>
+    <p>Skincare wisdom, ingredient deep-dives, and honest conversations about clean beauty.</p>
+    </div>
+</div>
+
+<section class="section">
+<div class="container">
+    <div id="blogGrid" style="display:grid;grid-template-columns:repeat(2,1fr);gap:2rem"></div>
+</div>
+</section>
+
+<section class="newsletter-section" style="background:var(--blush);margin-top:2rem">
+<div class="container newsletter-inner">
+    <div class="nl-text">
+    <h2>Get the Journal in Your Inbox</h2>
+    <p>Weekly skincare insights, new launches, and exclusive offers.</p>
+    </div>
+    <form class="nl-form" onsubmit="subscribeNewsletter(event)">
+        <input type="email" placeholder="Enter your email address" required>
+    <button type="submit">Subscribe</button>
+    </form>
+</div>
+</section>
+
+<div class="cart-overlay" id="cartOverlay" onclick="toggleCart()"></div>
+<div class="cart-sidebar" id="cartSidebar">
+<div class="cart-header"><h3>Your Cart <span id="cartItemCount">(0)</span></h3><button onclick="toggleCart()">✕</button></div>
+<div class="cart-items" id="cartItems"></div>
+<div class="cart-footer" id="cartFooter" style="display:none"><div class="cart-total"><span>Subtotal</span><strong id="cartTotal">₹0</strong></div><p class="cart-note">Free shipping above ₹699</p><a href="checkout.html" class="btn-primary" style="width:100%;text-align:center;display:block;">Checkout →</a></div>
+</div>
+<div class="toast" id="toast"></div>
+
+<footer style="background:var(--deep);padding:2rem 0;margin-top:3rem">
+<div class="container" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem">
+    <a href="index.html" class="logo" style="color:#FAF7F2">MAC<span style="color:#C4856A">&</span>GLOW</a>
+    <p style="font-size:0.75rem;color:rgba(250,247,242,0.3)">© 2026 Mac & Glow Skincare. All rights reserved.</p>
+</div>
+</footer>
+
+<script src="data.js"></script>
+<script src="api.js"></script>
+<script src="cart.js"></script>
+<script src="main.js"></script>
+<script src="nav.js"></script>
+<script src="chatbot.js"></script>
+<script>
+const BLOG_ARTICLES = [
+{ id:1, icon:'📖', title:'The Ultimate Guide to Layering Serums', cat:'Skincare Tips', date:'12 May 2026', excerpt:'Learn the correct order to layer your serums for maximum absorption and effectiveness. The sequence matters more than you think.' },
+{ id:2, icon:'🌿', title:'Why Bakuchiol is the Future of Anti-Ageing', cat:'Ingredients', date:'5 May 2026', excerpt:'Bakuchiol delivers retinol-like results without the irritation, dryness, or sun sensitivity. Here\'s the science behind our hero ingredient.' },
+{ id:3, icon:'☀️', title:'Building a Routine for Indian Skin in Summer', cat:'Routines', date:'28 Apr 2026', excerpt:'Summer in India means heat, humidity, and pollution. Here\'s how to adapt your skincare routine for the season.' },
+{ id:4, icon:'🔬', title:'Decoding Niacinamide: Everything You Need to Know', cat:'Ingredients', date:'20 Apr 2026', excerpt:'Niacinamide does it all — minimises pores, brightens, repairs the barrier, and reduces inflammation.' },
+{ id:5, icon:'💧', title:'Why Your Skin Barrier Matters', cat:'Education', date:'15 Apr 2026', excerpt:'Everything you need to know about protecting and repairing your skin\'s protective barrier.' },
+{ id:6, icon:'✨', title:'Morning vs Evening Skincare: What\'s the Difference?', cat:'Routines', date:'10 Apr 2026', excerpt:'Why your skin needs different ingredients in the AM versus PM.' }
+];
+
+document.addEventListener('DOMContentLoaded', () => {
+const grid = document.getElementById('blogGrid');
+grid.innerHTML = BLOG_ARTICLES.map(post => `
+    <div style="background:var(--white);border-radius:var(--radius);overflow:hidden;border:1px solid var(--border);cursor:pointer;transition:all var(--transition)" onclick="showToast('Reading: ${post.title}')">
+    <div style="background:var(--blush);padding:1.5rem;text-align:center">
+        <span style="font-size:2.5rem">${post.icon}</span>
+    </div>
+    <div style="padding:1.2rem">
+        <p style="font-size:0.68rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--muted);margin-bottom:0.3rem">${post.cat}</p>
+        <h3 style="font-family:var(--font-serif);font-size:1.1rem;color:var(--deep);margin-bottom:0.5rem">${post.title}</h3>
+        <p style="font-size:0.8rem;color:var(--muted);line-height:1.6;margin-bottom:0.8rem">${post.excerpt.substring(0,100)}...</p>
+        <div style="display:flex;justify-content:space-between;align-items:center">
+        <span style="font-size:0.7rem;color:var(--muted)">📅 ${post.date}</span>
+        <span style="font-size:0.7rem;color:var(--rose)">Read more →</span>
+        </div>
+    </div>
+    </div>
+`).join('');
+});
+</script>
+</body>
+</html>

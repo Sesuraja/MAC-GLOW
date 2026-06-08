@@ -1,0 +1,142 @@
+s<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ingredients — Mac & Glow</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<nav id="navbar">
+<div class="nav-inner">
+    <a href="index.html" class="logo">MAC<span>&</span>GLOW</a>
+    <ul class="nav-links" id="navLinks">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="shop.html">Shop</a></li>
+    <li><a href="routines.html">Routines</a></li>
+    <li><a href="ingredients.html" class="active">Ingredients</a></li>
+    <li><a href="about.html">About</a></li>
+    <li><a href="journal.html">Journal</a></li>
+    </ul>
+    <!-- Nav Actions -->
+    <div class="nav-actions">
+    <button class="icon-btn" aria-label="Search" onclick="toggleSearch()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+    </button>
+<button class="icon-btn" aria-label="Wishlist" onclick="window.location.href='wishlist.html'">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+    </button>
+    <button class="icon-btn cart-btn" aria-label="Cart" onclick="toggleCart()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+        <span class="cart-count" id="cartCount">0</span>
+    </button>
+    
+    <!-- Profile Dropdown -->
+    <div class="profile-dropdown">
+        <button class="icon-btn profile-btn" aria-label="Account" onclick="toggleProfileDropdown(event)">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        </button>
+        <div class="dropdown-content" id="profileDropdown"></div>
+    </div>
+    
+    <button class="hamburger" id="hamburger" aria-label="Menu" onclick="toggleMenu()">
+        <span></span><span></span><span></span>
+    </button>
+    </div>
+</div>
+
+<!-- Search Bar -->
+<div class="search-bar" id="searchBar">
+    <div class="search-inner">
+    <input type="text" placeholder="Search serums, moisturisers, ingredients…" id="searchInput" oninput="handleSearch(this.value)">
+    <button onclick="toggleSearch()">✕</button>
+    </div>
+    <div class="search-results" id="searchResults"></div>
+</nav>
+
+<div class="page-header">
+<div class="container">
+    <p class="breadcrumb"><a href="index.html">Home</a> / Ingredients</p>
+    <p class="eyebrow"><span class="eyebrow-line"></span>What's Inside</p>
+    <h1 class="section-title">Every Ingredient <em>Matters</em></h1>
+    <p>We believe in complete transparency. Every ingredient is chosen with purpose — no fillers, no greenwashing, no secrets.</p>
+</div>
+</div>
+
+<section class="section">
+<div class="container">
+    <div id="ingredientsGrid" style="display:grid;grid-template-columns:repeat(2,1fr);gap:2rem"></div>
+</div>
+</section>
+
+<section class="section" style="background:var(--white)">
+<div class="container">
+    <div style="text-align:center;max-width:600px;margin:0 auto 3rem">
+    <p class="eyebrow" style="justify-content:center"><span class="eyebrow-line"></span>Our Promise</p>
+    <h2 class="section-title">What You Won't <em>Find</em></h2>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:2rem;text-align:center">
+    <div><div style="font-size:2rem">❌</div><strong>Parabens</strong><br><small style="color:var(--muted)">No endocrine disruptors</small></div>
+    <div><div style="font-size:2rem">❌</div><strong>Sulfates</strong><br><small style="color:var(--muted)">No stripping agents</small></div>
+    <div><div style="font-size:2rem">❌</div><strong>Phthalates</strong><br><small style="color:var(--muted)">No synthetic fragrances</small></div>
+    <div><div style="font-size:2rem">❌</div><strong>Mineral Oil</strong><br><small style="color:var(--muted)">Only plant-based oils</small></div>
+    </div>
+</div>
+</section>
+
+<div class="cart-overlay" id="cartOverlay" onclick="toggleCart()"></div>
+<div class="cart-sidebar" id="cartSidebar">
+<div class="cart-header"><h3>Your Cart <span id="cartItemCount">(0)</span></h3><button onclick="toggleCart()">✕</button></div>
+<div class="cart-items" id="cartItems"></div>
+<div class="cart-footer" id="cartFooter" style="display:none"><div class="cart-total"><span>Subtotal</span><strong id="cartTotal">₹0</strong></div><p class="cart-note">Free shipping above ₹699</p><a href="checkout.html" class="btn-primary" style="width:100%;text-align:center;display:block;">Checkout →</a></div>
+</div>
+<div class="toast" id="toast"></div>
+
+<footer style="background:var(--deep);padding:2rem 0;margin-top:3rem">
+<div class="container" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem">
+    <a href="index.html" class="logo" style="color:#FAF7F2">MAC<span style="color:#C4856A">&</span>GLOW</a>
+    <p style="font-size:0.75rem;color:rgba(250,247,242,0.3)">© 2026 Mac & Glow Skincare. All rights reserved.</p>
+</div>
+</footer>
+
+<script src="data.js"></script>
+<script src="api.js"></script>
+<script src="cart.js"></script>
+<script src="main.js"></script>
+<script src="nav.js"></script>
+<script src="chatbot.js"></script>
+<script>
+const INGREDIENTS_LIST = [
+{ icon:'🌿', name:'Bakuchiol', benefit:'Anti-ageing', desc:'Clinically proven to reduce fine lines and improve skin firmness as effectively as retinol, without any of the irritation, peeling, or sun sensitivity. Safe for sensitive and pregnant skin.', tags:['Anti-ageing','Firming','Plant-based'] },
+{ icon:'🌸', name:'Rose Hip Oil', benefit:'Brightening', desc:'Cold-pressed from rosehip seeds, this oil is packed with vitamin A, vitamin C, and essential fatty acids. Fades scars, hyperpigmentation, and brightens uneven skin tone over time.', tags:['Brightening','Scars','Vitamin C'] },
+{ icon:'💧', name:'Hyaluronic Acid', benefit:'Hydration', desc:'A naturally occurring sugar molecule that holds 1000x its weight in water. Our formula uses three molecular weights to hydrate at the surface, mid-layer, and deep within the dermis.', tags:['Hydration','Plumping','All skins'] },
+{ icon:'☀️', name:'Vitamin C', benefit:'Brightening', desc:'Our stabilised 15% ascorbic acid formula brightens dark spots, evens skin tone, and provides antioxidant protection against UV damage and environmental pollution.', tags:['Brightening','Antioxidant','SPF boost'] },
+{ icon:'🧴', name:'Niacinamide', benefit:'Barrier repair', desc:'A multi-tasking form of Vitamin B3 that minimises the appearance of pores, reduces redness, fades pigmentation, regulates oil production, and strengthens the skin\'s barrier.', tags:['Pores','Redness','Barrier'] },
+{ icon:'🛡️', name:'Ceramides', benefit:'Barrier', desc:'Lipid molecules that are naturally found in skin. As we age, ceramide levels drop — leading to dryness, sensitivity, and a weakened barrier.', tags:['Barrier','Dryness','Sensitive'] },
+{ icon:'🍵', name:'Green Tea Extract', benefit:'Antioxidant', desc:'Rich in EGCG, green tea extract is one of the most potent antioxidants in skincare. Calms inflammation, combats free radicals, and reduces redness.', tags:['Antioxidant','Soothing','Pollution'] },
+{ icon:'🫧', name:'Salicylic Acid', benefit:'Pore cleansing', desc:'A beta-hydroxy acid (BHA) that is oil-soluble, allowing it to penetrate deep into pores to dissolve excess sebum, dead skin cells, and blackheads.', tags:['Pores','BHA','Oily skin'] }
+];
+
+document.addEventListener('DOMContentLoaded', () => {
+const grid = document.getElementById('ingredientsGrid');
+grid.innerHTML = INGREDIENTS_LIST.map(ing => `
+    <div style="background:var(--white);border-radius:var(--radius);padding:1.5rem;border:1px solid var(--border)">
+    <div style="display:flex;gap:1rem;align-items:flex-start">
+        <div style="font-size:2.5rem">${ing.icon}</div>
+        <div>
+        <h3 style="font-family:var(--font-serif);font-size:1.2rem;color:var(--deep);margin-bottom:0.3rem">${ing.name}</h3>
+        <span class="ing-tag">${ing.benefit}</span>
+        <p style="margin-top:0.8rem;font-size:0.85rem;color:var(--muted);line-height:1.6">${ing.desc}</p>
+        <div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-top:0.8rem">
+            ${ing.tags.map(t => `<span class="ing-tag">${t}</span>`).join('')}
+        </div>
+        </div>
+    </div>
+    </div>
+`).join('');
+});
+</script>
+</body>
+</html>

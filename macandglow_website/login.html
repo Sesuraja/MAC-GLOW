@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login — Mac & Glow</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<style>
+.auth-container {
+min-height: 100vh;
+display: flex;
+align-items: center;
+justify-content: center;
+padding: 6rem 1.5rem;
+background: linear-gradient(135deg, var(--cream) 0%, var(--blush) 100%);
+}
+
+.auth-card {
+max-width: 480px;
+width: 100%;
+background: var(--white);
+border-radius: var(--radius);
+box-shadow: var(--shadow);
+overflow: hidden;
+}
+
+.auth-header {
+padding: 2rem 2rem 0.5rem;
+text-align: center;
+border-bottom: 1px solid var(--border);
+}
+
+.auth-header .logo {
+font-size: 1.8rem;
+display: inline-block;
+margin-bottom: 1rem;
+}
+
+.auth-header h1 {
+font-family: var(--font-serif);
+font-size: 1.8rem;
+font-weight: 300;
+color: var(--deep);
+margin-bottom: 0.5rem;
+}
+
+.auth-header p {
+font-size: 0.85rem;
+color: var(--muted);
+}
+
+.auth-tabs {
+display: flex;
+border-bottom: 1px solid var(--border);
+}
+
+.auth-tab {
+flex: 1;
+text-align: center;
+padding: 1rem;
+background: none;
+border: none;
+font-family: var(--font-sans);
+font-size: 0.85rem;
+font-weight: 500;
+letter-spacing: 0.1em;
+text-transform: uppercase;
+color: var(--muted);
+cursor: pointer;
+transition: all var(--transition);
+}
+
+.auth-tab.active {
+color: var(--rose);
+border-bottom: 2px solid var(--rose);
+}
+
+.auth-form {
+padding: 2rem;
+}
+
+.form-group {
+margin-bottom: 1.2rem;
+}
+
+.form-group label {
+display: block;
+font-size: 0.75rem;
+letter-spacing: 0.1em;
+text-transform: uppercase;
+color: var(--muted);
+margin-bottom: 0.5rem;
+}
+
+.form-group input {
+width: 100%;
+padding: 0.85rem 1rem;
+border: 1px solid var(--border);
+border-radius: var(--radius-sm);
+font-family: var(--font-sans);
+font-size: 0.9rem;
+color: var(--deep);
+background: var(--white);
+transition: border-color var(--transition);
+outline: none;
+}
+
+.form-group input:focus {
+border-color: var(--rose);
+}
+
+.form-row {
+display: flex;
+justify-content: space-between;
+align-items: center;
+margin-bottom: 1.5rem;
+}
+
+.remember-me {
+display: flex;
+align-items: center;
+gap: 0.5rem;
+}
+
+.remember-me input {
+width: auto;
+margin: 0;
+}
+
+.remember-me label {
+margin: 0;
+font-size: 0.8rem;
+text-transform: none;
+letter-spacing: normal;
+color: var(--muted);
+}
+
+.forgot-link {
+font-size: 0.8rem;
+color: var(--rose);
+text-decoration: none;
+}
+
+.forgot-link:hover {
+text-decoration: underline;
+}
+
+.auth-btn {
+width: 100%;
+padding: 0.9rem;
+background: var(--deep);
+color: var(--cream);
+border: none;
+border-radius: var(--radius-sm);
+font-family: var(--font-sans);
+font-size: 0.85rem;
+font-weight: 500;
+letter-spacing: 0.1em;
+text-transform: uppercase;
+cursor: pointer;
+transition: background var(--transition);
+margin-bottom: 1rem;
+}
+
+.auth-btn:hover {
+background: var(--rose);
+}
+
+.or-divider {
+text-align: center;
+position: relative;
+margin: 1.5rem 0;
+}
+
+.or-divider::before {
+content: '';
+position: absolute;
+top: 50%;
+left: 0;
+right: 0;
+height: 1px;
+background: var(--border);
+}
+
+.or-divider span {
+position: relative;
+background: var(--white);
+padding: 0 1rem;
+font-size: 0.8rem;
+color: var(--muted);
+}
+
+.social-login {
+display: flex;
+gap: 1rem;
+}
+
+.social-btn {
+flex: 1;
+display: flex;
+align-items: center;
+justify-content: center;
+gap: 0.5rem;
+padding: 0.75rem;
+background: var(--white);
+border: 1px solid var(--border);
+border-radius: var(--radius-sm);
+font-family: var(--font-sans);
+font-size: 0.85rem;
+color: var(--deep);
+cursor: pointer;
+transition: all var(--transition);
+}
+
+.social-btn:hover {
+background: var(--blush);
+border-color: var(--rose);
+}
+
+.auth-footer {
+text-align: center;
+padding: 1.5rem;
+background: var(--cream);
+border-top: 1px solid var(--border);
+}
+
+.auth-footer p {
+font-size: 0.85rem;
+color: var(--muted);
+}
+
+.auth-footer a {
+color: var(--rose);
+text-decoration: none;
+font-weight: 500;
+}
+
+.auth-footer a:hover {
+text-decoration: underline;
+}
+
+.error-message {
+background: #f8d7da;
+color: #721c24;
+padding: 0.75rem;
+border-radius: var(--radius-sm);
+font-size: 0.8rem;
+margin-bottom: 1rem;
+display: none;
+}
+
+.success-message {
+background: #d4edda;
+color: #155724;
+padding: 0.75rem;
+border-radius: var(--radius-sm);
+font-size: 0.8rem;
+margin-bottom: 1rem;
+display: none;
+}
+
+.password-field {
+position: relative;
+}
+
+.password-toggle {
+position: absolute;
+right: 12px;
+top: 50%;
+transform: translateY(-50%);
+background: none;
+border: none;
+cursor: pointer;
+color: var(--muted);
+font-size: 0.9rem;
+}
+
+/* Profile Dropdown Styles */
+.profile-dropdown {
+position: relative;
+display: inline-block;
+}
+
+.profile-btn {
+background: none;
+border: none;
+cursor: pointer;
+padding: 8px;
+border-radius: 50%;
+transition: background var(--transition);
+}
+
+.profile-btn:hover {
+background: var(--blush);
+}
+
+.dropdown-content {
+position: absolute;
+right: 0;
+top: 45px;
+background: var(--white);
+min-width: 220px;
+border-radius: var(--radius);
+box-shadow: var(--shadow);
+border: 1px solid var(--border);
+z-index: 1000;
+display: none;
+overflow: hidden;
+}
+
+.dropdown-content.show {
+display: block;
+animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+from { opacity: 0; transform: translateY(-10px); }
+to { opacity: 1; transform: translateY(0); }
+}
+
+.dropdown-header {
+padding: 1rem;
+background: var(--cream);
+border-bottom: 1px solid var(--border);
+}
+
+.dropdown-header .user-name {
+font-weight: 600;
+color: var(--deep);
+display: block;
+margin-bottom: 0.2rem;
+}
+
+.dropdown-header .user-email {
+font-size: 0.7rem;
+color: var(--muted);
+}
+
+.dropdown-item {
+display: flex;
+align-items: center;
+gap: 0.8rem;
+padding: 0.8rem 1rem;
+color: var(--warm);
+text-decoration: none;
+font-size: 0.85rem;
+transition: background var(--transition);
+cursor: pointer;
+}
+
+.dropdown-item:hover {
+background: var(--blush);
+}
+
+.dropdown-divider {
+height: 1px;
+background: var(--border);
+margin: 0.3rem 0;
+}
+
+.logout-item {
+color: #dc2626;
+}
+
+.logout-item:hover {
+background: #fee2e2;
+}
+
+@media (max-width: 480px) {
+.auth-card {
+    margin: 0;
+}
+.auth-form {
+    padding: 1.5rem;
+}
+}
+</style>
+</head>
+<body>
+
+<div class="auth-container">
+<div class="auth-card">
+    <div class="auth-header">
+    <a href="index.html" class="logo">MAC<span>&</span>GLOW</a>
+    <h1>Welcome Back</h1>
+    <p>Sign in to access your account and track orders</p>
+    </div>
+
+    <div class="auth-tabs">
+    <button class="auth-tab active" onclick="switchTab('login')">Login</button>
+    <button class="auth-tab" onclick="switchTab('signup')">Sign Up</button>
+    </div>
+
+    <!-- Login Form -->
+    <div id="loginForm" class="auth-form">
+    <div id="loginError" class="error-message"></div>
+    <div id="loginSuccess" class="success-message"></div>
+    
+    <div class="form-group">
+        <label>Email Address</label>
+        <input type="email" id="loginEmail" placeholder="hello@macandglow.com">
+    </div>
+    
+    <div class="form-group">
+        <label>Password</label>
+        <div class="password-field">
+        <input type="password" id="loginPassword" placeholder="Enter your password">
+        <button type="button" class="password-toggle" onclick="togglePassword('loginPassword')">👁️</button>
+        </div>
+    </div>
+    
+    <div class="form-row">
+        <label class="remember-me">
+        <input type="checkbox" id="rememberMe"> Remember me
+        </label>
+        <a href="#" class="forgot-link" onclick="showForgotPassword()">Forgot Password?</a>
+    </div>
+    
+    <button class="auth-btn" onclick="handleLogin()">Sign In →</button>
+    
+    <div class="or-divider"><span>Or continue with</span></div>
+    
+    <div class="social-login">
+        <button class="social-btn" onclick="socialLogin('google')">📧 Google</button>
+        <button class="social-btn" onclick="socialLogin('facebook')">📘 Facebook</button>
+    </div>
+    </div>
+
+    <!-- Signup Form -->
+    <div id="signupForm" class="auth-form" style="display: none;">
+    <div id="signupError" class="error-message"></div>
+    <div id="signupSuccess" class="success-message"></div>
+    
+    <div class="form-group">
+        <label>Full Name</label>
+        <input type="text" id="signupName" placeholder="Priya Sharma">
+    </div>
+    
+    <div class="form-group">
+        <label>Email Address</label>
+        <input type="email" id="signupEmail" placeholder="hello@macandglow.com">
+    </div>
+    
+    <div class="form-group">
+        <label>Phone Number</label>
+        <input type="tel" id="signupPhone" placeholder="9876543210">
+    </div>
+    
+    <div class="form-group">
+        <label>Password</label>
+        <div class="password-field">
+        <input type="password" id="signupPassword" placeholder="Create a password">
+        <button type="button" class="password-toggle" onclick="togglePassword('signupPassword')">👁️</button>
+        </div>
+    </div>
+    
+    <div class="form-group">
+        <label>Confirm Password</label>
+        <div class="password-field">
+        <input type="password" id="signupConfirmPassword" placeholder="Confirm your password">
+        <button type="button" class="password-toggle" onclick="togglePassword('signupConfirmPassword')">👁️</button>
+        </div>
+    </div>
+    
+    <div class="form-row">
+        <label class="remember-me">
+        <input type="checkbox" id="termsCheckbox"> I agree to the <a href="#" style="color:var(--rose)">Terms & Conditions</a>
+        </label>
+    </div>
+    
+    <button class="auth-btn" onclick="handleSignup()">Create Account →</button>
+    
+    <div class="or-divider"><span>Or sign up with</span></div>
+    
+    <div class="social-login">
+        <button class="social-btn" onclick="socialLogin('google')">📧 Google</button>
+        <button class="social-btn" onclick="socialLogin('facebook')">📘 Facebook</button>
+    </div>
+    </div>
+
+    <div class="auth-footer">
+    <p>By continuing, you agree to Mac & Glow's <a href="#">Terms of Use</a> and <a href="#">Privacy Policy</a>.</p>
+    </div>
+</div>
+</div>
+
+<!-- Forgot Password Modal -->
+<div class="modal-overlay" id="forgotModal" style="display:none">
+<div class="quiz-modal" style="max-width:400px">
+    <button class="modal-close" onclick="closeForgotModal()">✕</button>
+    <div style="text-align:center">
+    <div style="font-size:2.5rem">🔐</div>
+    <h3 style="font-family:var(--font-serif);margin:1rem 0 0.5rem">Reset Password</h3>
+    <p style="font-size:0.85rem;color:var(--muted);margin-bottom:1.5rem">Enter your email to receive a reset link</p>
+    <input type="email" id="resetEmail" placeholder="your@email.com" style="width:100%;padding:0.8rem;border:1px solid var(--border);border-radius:var(--radius-sm);margin-bottom:1rem">
+    <button class="btn-primary" style="width:100%" onclick="sendResetLink()">Send Reset Link →</button>
+    </div>
+</div>
+</div>
+
+<script>
+function switchTab(tab) {
+const loginTab = document.querySelector('.auth-tabs button:first-child');
+const signupTab = document.querySelector('.auth-tabs button:last-child');
+const loginForm = document.getElementById('loginForm');
+const signupForm = document.getElementById('signupForm');
+
+if (tab === 'login') {
+    loginTab.classList.add('active');
+    signupTab.classList.remove('active');
+    loginForm.style.display = 'block';
+    signupForm.style.display = 'none';
+} else {
+    loginTab.classList.remove('active');
+    signupTab.classList.add('active');
+    loginForm.style.display = 'none';
+    signupForm.style.display = 'block';
+}
+
+  // Clear errors
+document.getElementById('loginError').style.display = 'none';
+document.getElementById('signupError').style.display = 'none';
+}
+
+function togglePassword(fieldId) {
+const field = document.getElementById(fieldId);
+if (field.type === 'password') {
+    field.type = 'text';
+} else {
+    field.type = 'password';
+}
+}
+
+function handleLogin() {
+const email = document.getElementById('loginEmail').value.trim();
+const password = document.getElementById('loginPassword').value;
+const rememberMe = document.getElementById('rememberMe').checked;
+const errorDiv = document.getElementById('loginError');
+const successDiv = document.getElementById('loginSuccess');
+
+errorDiv.style.display = 'none';
+successDiv.style.display = 'none';
+
+if (!email || !password) {
+    errorDiv.textContent = 'Please enter both email and password';
+    errorDiv.style.display = 'block';
+    return;
+}
+
+MG_API.login(email, password).then(function(data) {
+    var session = {
+    userId: data.user.id,
+    name: data.user.name,
+    email: data.user.email,
+    loggedInAt: new Date().toISOString()
+    };
+    if (rememberMe) {
+    localStorage.setItem('mg_session', JSON.stringify(session));
+    } else {
+    sessionStorage.setItem('mg_session', JSON.stringify(session));
+    }
+    MG_API.setToken(data.token, rememberMe);
+    successDiv.textContent = 'Login successful! Redirecting...';
+    successDiv.style.display = 'block';
+    if (typeof updateCartUI === 'function') updateCartUI();
+    setTimeout(function() {
+    var redirectUrl = sessionStorage.getItem('redirectAfterLogin') || 'index.html';
+    sessionStorage.removeItem('redirectAfterLogin');
+    window.location.href = redirectUrl;
+    }, 1500);
+}).catch(function(err) {
+    errorDiv.textContent = err.message || 'Invalid email or password. Please try again.';
+    errorDiv.style.display = 'block';
+});
+}
+
+function handleSignup() {
+const name = document.getElementById('signupName').value.trim();
+const email = document.getElementById('signupEmail').value.trim();
+const phone = document.getElementById('signupPhone').value.trim();
+const password = document.getElementById('signupPassword').value;
+const confirmPassword = document.getElementById('signupConfirmPassword').value;
+const termsAccepted = document.getElementById('termsCheckbox').checked;
+const errorDiv = document.getElementById('signupError');
+const successDiv = document.getElementById('signupSuccess');
+
+errorDiv.style.display = 'none';
+successDiv.style.display = 'none';
+
+if (!name || !email || !phone || !password) {
+    errorDiv.textContent = 'Please fill in all fields';
+    errorDiv.style.display = 'block';
+    return;
+}
+
+if (password !== confirmPassword) {
+    errorDiv.textContent = 'Passwords do not match';
+    errorDiv.style.display = 'block';
+    return;
+}
+
+if (password.length < 6) {
+    errorDiv.textContent = 'Password must be at least 6 characters';
+    errorDiv.style.display = 'block';
+    return;
+}
+
+if (!termsAccepted) {
+    errorDiv.textContent = 'Please accept the Terms & Conditions';
+    errorDiv.style.display = 'block';
+    return;
+}
+
+MG_API.register(name, email, phone, password).then(function(data) {
+    var session = {
+    userId: data.user.id,
+    name: data.user.name,
+    email: data.user.email,
+    loggedInAt: new Date().toISOString()
+    };
+    sessionStorage.setItem('mg_session', JSON.stringify(session));
+    MG_API.setToken(data.token, false);
+    successDiv.textContent = 'Account created successfully! Redirecting...';
+    successDiv.style.display = 'block';
+    setTimeout(function() {
+    window.location.href = 'index.html';
+    }, 1500);
+}).catch(function(err) {
+    errorDiv.textContent = err.message || 'Registration failed. Please try again.';
+    errorDiv.style.display = 'block';
+});
+}
+
+function socialLogin(provider) {
+showToast(`Connecting with ${provider}...`);
+setTimeout(() => {
+    showToast(`Demo: ${provider} login would work here`);
+}, 1000);
+}
+
+function showForgotPassword() {
+document.getElementById('forgotModal').style.display = 'flex';
+}
+
+function closeForgotModal() {
+document.getElementById('forgotModal').style.display = 'none';
+}
+
+function sendResetLink() {
+const email = document.getElementById('resetEmail').value;
+if (!email) {
+    showToast('Please enter your email address');
+    return;
+}
+MG_API.forgotPassword(email).then(function() {
+    showToast('If an account exists, a reset link has been sent');
+    closeForgotModal();
+}).catch(function() {
+    showToast('Something went wrong. Please try again.');
+});
+}
+
+// Check if user is already logged in
+function checkAuth() {
+const session = localStorage.getItem('mg_session') || sessionStorage.getItem('mg_session');
+if (session && window.location.pathname.includes('login.html')) {
+    // Already logged in, redirect to home
+    window.location.href = 'index.html';
+}
+}
+
+// Run auth check on page load
+document.addEventListener('DOMContentLoaded', () => {
+checkAuth();
+});
+</script>
+
+<script src="data.js"></script>
+<script src="api.js"></script>
+<script src="cart.js"></script>
+<script src="main.js"></script>
+<script src="nav.js"></script>
+<script src="chatbot.js"></script>
+</body>
+</html>

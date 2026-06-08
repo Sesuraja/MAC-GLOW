@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Account — Mac & Glow</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<style>
+.account-container{max-width:1200px;margin:0 auto;padding:6rem 1.5rem;min-height:70vh}
+.account-grid{display:grid;grid-template-columns:280px 1fr;gap:2rem}
+.account-sidebar{background:var(--white);border-radius:var(--radius);border:1px solid var(--border);padding:1.5rem}
+.account-avatar{text-align:center;margin-bottom:1.5rem}
+.avatar-circle{width:80px;height:80px;background:var(--blush);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:2.5rem;margin:0 auto 0.8rem}
+.account-name{font-family:var(--font-serif);font-size:1.2rem;color:var(--deep);margin-bottom:0.2rem}
+.account-email{font-size:0.75rem;color:var(--muted)}
+.account-menu{list-style:none;margin-top:1.5rem}
+.account-menu li{margin-bottom:0.5rem}
+.account-menu a{display:flex;align-items:center;gap:0.8rem;padding:0.8rem;border-radius:var(--radius-sm);color:var(--warm);text-decoration:none;transition:all var(--transition);cursor:pointer}
+.account-menu a:hover,.account-menu a.active{background:var(--blush);color:var(--rose)}
+.account-content{background:var(--white);border-radius:var(--radius);border:1px solid var(--border);padding:2rem}
+.form-group{margin-bottom:1.2rem}
+.form-group label{display:block;font-size:0.75rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-bottom:0.5rem}
+.form-group input,.form-group textarea{width:100%;padding:0.85rem 1rem;border:1px solid var(--border);border-radius:var(--radius-sm);font-family:var(--font-sans);font-size:0.9rem;color:var(--deep);background:var(--white);outline:none}
+.form-group input:focus,.form-group textarea:focus{border-color:var(--rose)}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.logout-btn{background:#dc2626;color:white;border:none;padding:0.8rem;border-radius:var(--radius-sm);width:100%;cursor:pointer;font-size:0.85rem;margin-top:1rem}
+.logout-btn:hover{background:#b91c1c}
+.order-card{border:1px solid var(--border);border-radius:var(--radius);padding:1rem;margin-bottom:1rem}
+.order-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:0.5rem;flex-wrap:wrap}
+.order-id{font-weight:bold;color:var(--deep)}
+.order-status{padding:3px 10px;border-radius:100px;font-size:0.7rem;font-weight:500}
+.status-confirmed{background:#e8f5e9;color:#2e7d32}
+.status-processing{background:#fff3e0;color:#ef6c00}
+.status-shipped{background:#e3f2fd;color:#1565c0}
+.status-delivered{background:#e8f5e9;color:#2e7d32}
+.status-cancelled{background:#ffebee;color:#c62828}
+.order-date{font-size:0.75rem;color:var(--muted);margin-bottom:0.5rem}
+.order-items-preview{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px}
+.order-item-badge{background:var(--cream);padding:4px 10px;border-radius:20px;font-size:0.7rem;display:inline-flex;align-items:center;gap:5px}
+.order-total{font-weight:bold;color:var(--rose);margin-bottom:0.8rem}
+.order-actions{display:flex;gap:0.8rem;margin-top:0.8rem}
+.order-actions button{padding:0.4rem 1rem;font-size:0.7rem;cursor:pointer;border:none;border-radius:var(--radius-sm);font-family:var(--font-sans)}
+.view-details-btn{background:var(--deep);color:var(--cream)}
+.view-details-btn:hover{background:var(--rose)}
+.cancel-order-btn{background:#fff;border:1px solid #dc2626;color:#dc2626}
+.cancel-order-btn:hover{background:#dc2626;color:white}
+.order-detail-modal{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;z-index:2000}
+.order-detail-card{background:white;max-width:550px;width:90%;border-radius:var(--radius);padding:1.5rem;max-height:80vh;overflow:auto}
+.modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;padding-bottom:0.5rem;border-bottom:1px solid var(--border)}
+.modal-header h3{font-family:var(--font-serif)}
+.close-modal{background:none;border:none;font-size:1.5rem;cursor:pointer;color:var(--muted)}
+.order-item-row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border)}
+.order-item-icon{width:45px;height:45px;background:var(--blush);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.6rem}
+.order-item-details{flex:1}
+.order-item-name{font-weight:600;font-size:0.85rem}
+.order-item-price{font-size:0.75rem;color:var(--rose)}
+.address-card{background:var(--cream);border-radius:var(--radius);padding:1rem;margin-bottom:1rem;display:flex;justify-content:space-between;align-items:flex-start}
+.address-info p{margin:0.2rem 0;font-size:0.85rem}
+.address-actions{display:flex;gap:0.5rem}
+.address-actions button{background:none;border:none;cursor:pointer;font-size:0.8rem;padding:0.2rem 0.5rem;border-radius:4px}
+.edit-address{color:var(--rose)}
+.delete-address{color:#dc2626}
+.current-location-btn{background:var(--blush);border:1px solid var(--rose);color:var(--rose);padding:8px 15px;border-radius:30px;cursor:pointer;font-size:0.75rem;margin-bottom:15px;display:flex;align-items:center;gap:8px}
+.current-location-btn:hover{background:var(--rose);color:white}
+.login-prompt{text-align:center;padding:4rem}
+.login-prompt .icon{font-size:4rem;margin-bottom:1rem}
+.address-modal{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;z-index:2000}
+.address-modal-card{background:white;max-width:500px;width:90%;border-radius:var(--radius);padding:1.5rem}
+@media(max-width:768px){.account-grid{grid-template-columns:1fr}.form-row{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<nav id="navbar">
+<div class="nav-inner">
+<a href="index.html" class="logo">MAC<span>&</span>GLOW</a>
+<ul class="nav-links" id="navLinks">
+<li><a href="index.html">Home</a></li>
+<li><a href="shop.html">Shop</a></li>
+<li><a href="routines.html">Routines</a></li>
+<li><a href="ingredients.html">Ingredients</a></li>
+<li><a href="about.html">About</a></li>
+<li><a href="journal.html">Journal</a></li>
+</ul>
+<div class="nav-actions">
+<button class="icon-btn cart-btn" onclick="toggleCart()"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg><span class="cart-count" id="cartCount">0</span></button>
+<button class="hamburger" id="hamburger" onclick="toggleMenu()"><span></span><span></span><span></span></button>
+</div>
+</div>
+</nav>
+
+<div class="account-container" id="accountContainer"></div>
+
+<div class="cart-overlay" id="cartOverlay" onclick="toggleCart()"></div>
+<div class="cart-sidebar" id="cartSidebar">
+<div class="cart-header"><h3>Your Cart <span id="cartItemCount">(0)</span></h3><button onclick="toggleCart()">✕</button></div>
+<div class="cart-items" id="cartItems"></div>
+<div class="cart-footer" id="cartFooter" style="display:none"><div class="cart-total"><span>Subtotal</span><strong id="cartTotal">₹0</strong></div><p class="cart-note">Free shipping above ₹699</p><a href="checkout.html" class="btn-primary" style="width:100%;text-align:center;display:block;">Checkout →</a></div>
+</div>
+<div class="toast" id="toast"></div>
+
+<footer style="background:var(--deep);padding:2rem 0;margin-top:3rem">
+<div class="container" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem">
+<a href="index.html" class="logo" style="color:#FAF7F2">MAC<span style="color:#C4856A">&</span>GLOW</a>
+<p style="font-size:0.75rem;color:rgba(250,247,242,0.3)">© 2026 Mac & Glow Skincare. All rights reserved.</p>
+</div>
+</footer>
+
+<script src="data.js"></script>
+<script src="api.js"></script>
+<script src="cart.js"></script>
+<script src="main.js"></script>
+<script src="nav.js"></script>
+<script src="chatbot.js"></script>
+
+<script>
+function getCurrentUser(){
+var s = localStorage.getItem('mg_session') || sessionStorage.getItem('mg_session');
+return s ? JSON.parse(s) : null;
+}
+
+function getSavedAddresses(){
+var user = getCurrentUser();
+if(!user) return [];
+var addresses = localStorage.getItem('addresses_' + user.email);
+return addresses ? JSON.parse(addresses) : [];
+}
+
+function saveAddresses(addresses){
+var user = getCurrentUser();
+if(user){ localStorage.setItem('addresses_' + user.email, JSON.stringify(addresses)); }
+}
+
+function getUserOrders(callback){
+var token = MG_API.getToken();
+if(!token){ callback([]); return; }
+MG_API.getMyOrders().then(function(data){
+    callback(data.orders || []);
+}).catch(function(){
+    callback([]);
+});
+}
+
+function getProductIcon(productName){
+if(window.PRODUCTS){
+    for(var i=0;i<PRODUCTS.length;i++){
+    if(PRODUCTS[i].name === productName){ return PRODUCTS[i].icon; }
+    }
+}
+return '✨';
+}
+
+function getStatusClass(status){
+    var map = {confirmed:'status-confirmed',processing:'status-processing',shipped:'status-shipped',delivered:'status-delivered',cancelled:'status-cancelled'};
+    return map[status] || 'status-confirmed';
+}
+
+function getStatusText(status){
+    var map = {confirmed:'Confirmed',processing:'Processing',shipped:'Shipped',delivered:'Delivered',cancelled:'Cancelled'};
+    return map[status] || 'Confirmed';
+}
+
+function showOrderDetails(orderId){
+MG_API.trackOrder(orderId).then(function(data){
+    var order = data.order;
+    if(!order) return;
+    var itemsHtml = '';
+    for(var i=0;i<order.items.length;i++){
+    var it = order.items[i];
+    var icon = getProductIcon(it.name);
+    itemsHtml += '<div class="order-item-row"><div class="order-item-icon">'+icon+'</div><div class="order-item-details"><div class="order-item-name">'+it.name+'</div><div class="order-item-price">Qty: '+it.qty+' × ₹'+it.price.toLocaleString()+'</div></div><div style="font-weight:bold">₹'+(it.price*it.qty).toLocaleString()+'</div></div>';
+    }
+    var modalHtml = '<div class="order-detail-modal" id="orderDetailModal"><div class="order-detail-card"><div class="modal-header"><h3>📦 Order Details</h3><button class="close-modal" onclick="closeOrderDetail()">✕</button></div>';
+    modalHtml += '<p><strong>Order ID:</strong> '+order.orderId+'</p>';
+    modalHtml += '<p><strong>Date:</strong> '+new Date(order.createdAt).toLocaleString()+'</p>';
+    modalHtml += '<p><strong>Status:</strong> <span class="'+getStatusClass(order.status)+'" style="padding:2px 8px;border-radius:100px;font-size:0.7rem">'+getStatusText(order.status)+'</span></p>';
+    modalHtml += '<p><strong>Payment:</strong> '+order.payment+'</p>';
+    modalHtml += '<div style="margin:1rem 0"><strong>Products:</strong></div>';
+    modalHtml += itemsHtml;
+    modalHtml += '<div style="border-top:1px solid var(--border);padding-top:0.8rem;margin-top:0.5rem"><div style="display:flex;justify-content:space-between"><strong>Subtotal:</strong><span>₹'+order.subtotal.toLocaleString()+'</span></div>';
+    modalHtml += '<div style="display:flex;justify-content:space-between"><strong>Shipping:</strong><span>'+(order.shipping===0?'Free':'₹'+order.shipping)+'</span></div>';
+    modalHtml += '<div style="display:flex;justify-content:space-between;margin-top:0.5rem;font-size:1.1rem"><strong>Total Paid:</strong><strong style="color:var(--rose)">₹'+order.total.toLocaleString()+'</strong></div></div>';
+    if(order.status !== 'cancelled' && order.status !== 'delivered'){
+    modalHtml += '<button class="cancel-order-btn" style="width:100%;margin-top:1rem;padding:0.6rem" onclick="cancelOrder(\''+order.orderId+'\')">❌ Cancel Order</button>';
+    }
+    modalHtml += '</div></div>';
+    document.body.insertAdjacentHTML('beforeend', modalHtml);
+});
+}
+
+function closeOrderDetail(){
+    var modal = document.getElementById('orderDetailModal');
+    if(modal) modal.remove();
+}
+
+function cancelOrder(orderId){
+    if(confirm('Are you sure you want to cancel this order?')){
+    MG_API.cancelOrder(orderId).then(function(){
+        closeOrderDetail();
+        showSection('orders');
+        showToast('Order cancelled successfully');
+    }).catch(function(err){
+        showToast(err.message || 'Failed to cancel order');
+    });
+    }
+}
+
+function showAddAddressModal(addressToEdit){
+    var modalHtml = '<div class="address-modal" id="addressModal"><div class="address-modal-card"><div class="modal-header"><h3>'+(addressToEdit?'Edit Address':'Add New Address')+'</h3><button class="close-modal" onclick="closeAddressModal()">✕</button></div>';
+    modalHtml += '<button class="current-location-btn" onclick="getCurrentLocation()">📍 Use My Current Location</button>';
+    modalHtml += '<form id="addressForm" onsubmit="saveAddress(event)">';
+    modalHtml += '<input type="hidden" id="addressId" value="'+(addressToEdit?addressToEdit.id:'')+'">';
+    modalHtml += '<div class="form-group"><label>Full Name</label><input type="text" id="addrName" value="'+(addressToEdit?addressToEdit.name:'')+'" required></div>';
+    modalHtml += '<div class="form-group"><label>Phone Number</label><input type="tel" id="addrPhone" value="'+(addressToEdit?addressToEdit.phone:'')+'" required></div>';
+    modalHtml += '<div class="form-group"><label>Street Address / House No.</label><input type="text" id="addrStreet" value="'+(addressToEdit?addressToEdit.street:'')+'" required></div>';
+    modalHtml += '<div class="form-group"><label>Landmark (Optional)</label><input type="text" id="addrLandmark" value="'+(addressToEdit?addressToEdit.landmark:'')+'"></div>';
+    modalHtml += '<div class="form-row"><div class="form-group"><label>City</label><input type="text" id="addrCity" value="'+(addressToEdit?addressToEdit.city:'')+'" required></div>';
+    modalHtml += '<div class="form-group"><label>State</label><input type="text" id="addrState" value="'+(addressToEdit?addressToEdit.state:'')+'" required></div></div>';
+    modalHtml += '<div class="form-row"><div class="form-group"><label>PIN Code</label><input type="text" id="addrPincode" value="'+(addressToEdit?addressToEdit.pincode:'')+'" required pattern="[0-9]{6}" maxlength="6"></div>';
+    modalHtml += '<div class="form-group"><label>Address Type</label><select id="addrType"><option '+(addressToEdit&&addressToEdit.type==='Home'?'selected':'')+'>Home</option><option '+(addressToEdit&&addressToEdit.type==='Work'?'selected':'')+'>Work</option><option '+(addressToEdit&&addressToEdit.type==='Other'?'selected':'')+'>Other</option></select></div></div>';
+    modalHtml += '<button type="submit" class="btn-primary" style="width:100%">'+(addressToEdit?'Update Address':'Save Address')+' →</button>';
+    modalHtml += '</form></div></div>';
+    document.body.insertAdjacentHTML('beforeend', modalHtml);
+}
+
+function closeAddressModal(){
+    var modal = document.getElementById('addressModal');
+    if(modal) modal.remove();
+}
+
+function saveAddress(e){
+    e.preventDefault();
+    var addresses = getSavedAddresses();
+    var id = document.getElementById('addressId').value;
+    var newAddress = {
+    id: id || 'addr_' + Date.now(),
+    name: document.getElementById('addrName').value,
+    phone: document.getElementById('addrPhone').value,
+    street: document.getElementById('addrStreet').value,
+    landmark: document.getElementById('addrLandmark').value,
+    city: document.getElementById('addrCity').value,
+    state: document.getElementById('addrState').value,
+    pincode: document.getElementById('addrPincode').value,
+    type: document.getElementById('addrType').value
+};
+    if(id){
+    for(var i=0;i<addresses.length;i++){ if(addresses[i].id===id){ addresses[i]=newAddress; break; } }
+    } else {
+    addresses.push(newAddress);
+    }
+    saveAddresses(addresses);
+    closeAddressModal();
+    showAddressesList();
+    showToast('Address saved successfully!');
+}
+
+function deleteAddress(addressId){
+    if(confirm('Delete this address?')){
+    var addresses = getSavedAddresses();
+    var newAddresses = [];
+    for(var i=0;i<addresses.length;i++){ if(addresses[i].id!==addressId){ newAddresses.push(addresses[i]); } }
+    saveAddresses(newAddresses);
+    showAddressesList();
+    showToast('Address deleted');
+    }
+}
+
+function editAddress(addressId){
+    var addresses = getSavedAddresses();
+    for(var i=0;i<addresses.length;i++){ if(addresses[i].id===addressId){ showAddAddressModal(addresses[i]); return; } }
+}
+
+function getCurrentLocation(){
+    if(!navigator.geolocation){ showToast('Geolocation not supported'); return; }
+    showToast('Getting your location...');
+    navigator.geolocation.getCurrentPosition(function(position){
+    fetch('https://nominatim.openstreetmap.org/reverse?format=json&lat='+position.coords.latitude+'&lon='+position.coords.longitude+'&addressdetails=1')
+        .then(function(res){ return res.json(); })
+        .then(function(data){
+        if(data.address){
+            var addr = data.address;
+            if(document.getElementById('addrStreet')) document.getElementById('addrStreet').value = addr.road || addr.pedestrian || '';
+            if(document.getElementById('addrCity')) document.getElementById('addrCity').value = addr.city || addr.town || addr.village || '';
+            if(document.getElementById('addrState')) document.getElementById('addrState').value = addr.state || '';
+            if(document.getElementById('addrPincode')) document.getElementById('addrPincode').value = addr.postcode || '';
+            showToast('Location fetched! Please verify and save.');
+        } else { showToast('Could not get address details'); }
+        }).catch(function(){ showToast('Error getting address'); });
+    }, function(){ showToast('Unable to get location. Please allow permission.'); });
+}
+
+function showAddressesList(){
+    var content = document.getElementById('accountContent');
+    var addresses = getSavedAddresses();
+    var html = '<h2 style="font-family:var(--font-serif);margin-bottom:1rem">Saved Addresses</h2>';
+    html += '<button class="current-location-btn" onclick="showAddAddressModal(null)">+ Add New Address</button>';
+    if(addresses.length === 0){
+    html += '<div style="text-align:center;padding:3rem"><div style="font-size:3rem">📍</div><p style="color:var(--muted);margin:1rem 0">No saved addresses yet</p></div>';
+    } else {
+    for(var i=0;i<addresses.length;i++){
+        var a = addresses[i];
+        html += '<div class="address-card"><div class="address-info"><p><strong>'+a.name+'</strong> ('+a.type+')</p>';
+        html += '<p>'+a.street+(a.landmark?', '+a.landmark:'')+'</p>';
+        html += '<p>'+a.city+', '+a.state+' - '+a.pincode+'</p>';
+        html += '<p>📞 '+a.phone+'</p></div>';
+        html += '<div class="address-actions"><button class="edit-address" onclick="editAddress(\''+a.id+'\')">✏️ Edit</button>';
+        html += '<button class="delete-address" onclick="deleteAddress(\''+a.id+'\')">🗑️ Delete</button></div></div>';
+    }
+    }
+    content.innerHTML = html;
+}
+
+/* ══════════════════════════════════════════════
+    FIX 1 — showSection: active highlight works
+    correctly using element IDs, no event needed
+══════════════════════════════════════════════ */
+function showSection(section){
+    var user = getCurrentUser();
+    var content = document.getElementById('accountContent');
+    if(!content) return;
+
+  /* Highlight correct sidebar link */
+    var menuMap = {profile:'menuProfile', orders:'menuOrders', address:'menuAddress', security:'menuSecurity'};
+    Object.keys(menuMap).forEach(function(k){
+    var el = document.getElementById(menuMap[k]);
+    if(!el) return;
+    el.classList.remove('active');
+    if(k === section) el.classList.add('active');
+    });
+
+    if(section === 'profile'){
+    content.innerHTML = '<h2 style="font-family:var(--font-serif);margin-bottom:1.5rem">Profile Details</h2><form onsubmit="updateProfile(event)"><div class="form-group"><label>Full Name</label><input type="text" id="profileName" value="'+(user.name||'')+'" required></div><div class="form-group"><label>Email Address</label><input type="email" id="profileEmail" value="'+(user.email||'')+'" required></div><div class="form-group"><label>Phone Number</label><input type="tel" id="profilePhone" value="'+(user.phone||'')+'"></div><button type="submit" class="btn-primary">Save Changes →</button></form>';
+    }
+    else if(section === 'orders'){
+    content.innerHTML = '<h2 style="font-family:var(--font-serif);margin-bottom:1rem">My Orders</h2><div style="text-align:center;padding:3rem"><div style="font-size:2rem">⏳</div><p style="color:var(--muted);margin-top:1rem">Loading orders...</p></div>';
+    getUserOrders(function(userOrders){
+        if(userOrders.length === 0){
+        content.innerHTML = '<h2 style="font-family:var(--font-serif);margin-bottom:1rem">My Orders</h2><div style="text-align:center;padding:3rem"><div style="font-size:3rem">📦</div><p style="color:var(--muted);margin-top:1rem">No orders yet</p><a href="shop.html" class="btn-primary" style="margin-top:1rem;display:inline-block">Start Shopping →</a></div>';
+        } else {
+        var ordersHtml = '<h2 style="font-family:var(--font-serif);margin-bottom:1rem">My Orders ('+userOrders.length+')</h2>';
+        for(var i=0;i<userOrders.length;i++){
+            var o = userOrders[i];
+            var previewHtml = '';
+            for(var j=0;j<o.items.length && j<3;j++){
+            var icon = getProductIcon(o.items[j].name);
+            previewHtml += '<span class="order-item-badge">'+icon+' '+o.items[j].name.substring(0,15)+(o.items[j].name.length>15?'...':'')+'</span>';
+            }
+            if(o.items.length > 3){ previewHtml += '<span class="order-item-badge">+'+(o.items.length-3)+' more</span>'; }
+            ordersHtml += '<div class="order-card"><div class="order-header"><span class="order-id">Order #'+o.orderId+'</span><span class="order-status '+getStatusClass(o.status)+'">'+getStatusText(o.status)+'</span></div><div class="order-date">📅 '+new Date(o.createdAt).toLocaleString()+'</div><div class="order-items-preview">'+previewHtml+'</div><div class="order-total">Total: ₹'+o.total.toLocaleString()+'</div><div class="order-actions"><button class="view-details-btn" onclick="showOrderDetails(\''+o.orderId+'\')">👁️ View Details</button>';
+            if(o.status !== 'cancelled' && o.status !== 'delivered'){
+            ordersHtml += '<button class="cancel-order-btn" onclick="cancelOrder(\''+o.orderId+'\')">❌ Cancel</button>';
+            }
+            ordersHtml += '</div></div>';
+        }
+        content.innerHTML = ordersHtml;
+        }
+    });
+    }
+    else if(section === 'address'){
+    showAddressesList();
+    }
+    else if(section === 'security'){
+    content.innerHTML = '<h2 style="font-family:var(--font-serif);margin-bottom:1rem">Security Settings</h2><form onsubmit="changePassword(event)"><div class="form-group"><label>New Password</label><input type="password" id="newPassword" required></div><div class="form-group"><label>Confirm Password</label><input type="password" id="confirmPassword" required></div><button type="submit" class="btn-primary">Change Password →</button></form>';
+    }
+}
+
+function updateProfile(e){
+e.preventDefault();
+var name = document.getElementById('profileName').value;
+var email = document.getElementById('profileEmail').value;
+var phone = document.getElementById('profilePhone').value;
+MG_API.updateProfile({ name: name, email: email, phone: phone }).then(function(data){
+    var session = getCurrentUser();
+    if(session){
+    session.name = data.user.name;
+    session.email = data.user.email;
+    session.phone = data.user.phone;
+    if(localStorage.getItem('mg_session')){ localStorage.setItem('mg_session', JSON.stringify(session)); }
+    else { sessionStorage.setItem('mg_session', JSON.stringify(session)); }
+    }
+    showToast('Profile updated successfully! ✨');
+    var nameEl = document.querySelector('.account-name');
+    var emailEl = document.querySelector('.account-email');
+    if(nameEl) nameEl.textContent = data.user.name;
+    if(emailEl) emailEl.textContent = data.user.email;
+}).catch(function(err){
+    showToast(err.message || 'Failed to update profile');
+});
+}
+
+function changePassword(e){
+e.preventDefault();
+var currentPassword = prompt('Enter your current password:');
+if(!currentPassword) return;
+var newPass = document.getElementById('newPassword').value;
+var confirm = document.getElementById('confirmPassword').value;
+if(newPass !== confirm){ showToast('Passwords do not match'); return; }
+if(newPass.length < 6){ showToast('Password must be at least 6 characters'); return; }
+MG_API.changePassword(currentPassword, newPass).then(function(){
+    showToast('Password changed successfully!');
+    document.getElementById('newPassword').value = '';
+    document.getElementById('confirmPassword').value = '';
+}).catch(function(err){
+    showToast(err.message || 'Failed to change password');
+});
+}
+
+function handleLogoutFromAccount(){
+localStorage.removeItem('mg_session');
+sessionStorage.removeItem('mg_session');
+showToast('Logged out successfully! 👋');
+setTimeout(function(){ window.location.href = 'index.html'; }, 1000);
+}
+
+/* ══════════════════════════════════════════════
+FIX 2 — showAccountContent accepts defaultTab
+so it opens the correct section on first render
+══════════════════════════════════════════════ */
+function showAccountContent(defaultTab){
+var user = getCurrentUser();
+var container = document.getElementById('accountContainer');
+container.innerHTML =
+    '<div class="account-grid">' +
+'<div class="account-sidebar">' +
+        '<div class="account-avatar">' +
+'<div class="avatar-circle">👤</div>' +
+'<div class="account-name">'+(user.name||'User')+'</div>' +
+'<div class="account-email">'+(user.email||'')+'</div>' +
+        '</div>' +
+        '<ul class="account-menu">' +
+'<li><a href="#" id="menuProfile"  onclick="showSection(\'profile\');return false">👤 Profile Details</a></li>' +
+'<li><a href="#" id="menuOrders"   onclick="showSection(\'orders\');return false">📦 My Orders</a></li>' +
+'<li><a href="#" id="menuAddress"  onclick="showSection(\'address\');return false">📍 Saved Addresses</a></li>' +
+'<li><a href="#" id="menuSecurity" onclick="showSection(\'security\');return false">🔒 Security</a></li>' +
+        '</ul>' +
+            '<button class="logout-btn" onclick="handleLogoutFromAccount()">🚪 Logout</button>' +
+'</div>' +
+    '<div class="account-content" id="accountContent"></div>' +
+    '</div>';
+
+  /* FIX: open the tab asked for (default: profile) */
+showSection(defaultTab || 'profile');
+}
+
+function showLoginPrompt(){
+    var container = document.getElementById('accountContainer');
+    container.innerHTML = '<div class="login-prompt"><div class="icon">🔐</div><h3>Login Required</h3><p>Please login to view your account details and order history.</p><a href="login.html" class="btn-primary" style="display:inline-block;margin-top:1rem">Login to Your Account →</a><p style="margin-top:1rem;font-size:0.85rem">Don\'t have an account? <a href="login.html" style="color:var(--rose)">Sign up here</a></p></div>';
+}
+
+function getUrlParam(param){
+    return new URLSearchParams(window.location.search).get(param);
+}
+
+/* ══════════════════════════════════════════════
+    FIX 3 — DOMContentLoaded reads ?tab= first,
+    passes it to showAccountContent in one call —
+    no more race condition between profile & orders
+══════════════════════════════════════════════ */
+document.addEventListener('DOMContentLoaded', function(){
+    var user = getCurrentUser();
+    if(!user){
+    showLoginPrompt();
+    } else {
+    var tab = getUrlParam('tab') || 'profile';
+    showAccountContent(tab);
+    }
+    if(typeof updateCartUI === 'function') updateCartUI();
+});
+</script>
+</body>
+</html>
