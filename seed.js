@@ -1,7 +1,7 @@
 require('dotenv').config();
 const mongoose = require('mongoose');
-const Product = require('./api/models/Product');
-const User = require('./api/models/User');
+const Product = require('./server/models/Product');
+const User = require('./server/models/User');
 
 const products = [
   { id:1, name:'10% Vita-C Face Serum 30ml', category:'serums', price:299, mrp:499, badge:'Bestseller', icon:'✨', bg:'#F0E4D8', desc:'For Hyperpigmentation & Dull Skin', fullDesc:'Aqua, 3-O-Ethyl Ascorbic Acid, Butylene Glycol...', rating:4.8, reviews:120, tags:['brightening','serum','vitamin-c'], skin:'All skin types', size:'30ml' },
@@ -50,7 +50,7 @@ async function seed() {
     const adminEmail = 'admin@macandglow.com';
     const existingAdmin = await User.findOne({ email: adminEmail });
     if (!existingAdmin) {
-      const UserModel = require('./api/models/User');
+      const UserModel = require('./server/models/User');
       const admin = new UserModel({
         name: 'Admin',
         email: adminEmail,

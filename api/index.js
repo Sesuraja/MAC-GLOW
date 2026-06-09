@@ -2,8 +2,8 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
-const connectDB = require('./config/db');
-const { requireDB } = require('./middleware/dbCheck');
+const connectDB = require('../server/config/db');
+const { requireDB } = require('../server/middleware/dbCheck');
 
 const app = express();
 
@@ -19,19 +19,19 @@ if (process.env.MONGODB_URI) {
 }
 
 // Routes that need DB
-app.use('/api/auth', requireDB, require('./routes/auth'));
-app.use('/api/orders', requireDB, require('./routes/orders'));
-app.use('/api/contact', requireDB, require('./routes/contact'));
-app.use('/api/wishlist', requireDB, require('./routes/wishlist'));
+app.use('/api/auth', requireDB, require('../server/routes/auth'));
+app.use('/api/orders', requireDB, require('../server/routes/orders'));
+app.use('/api/contact', requireDB, require('../server/routes/contact'));
+app.use('/api/wishlist', requireDB, require('../server/routes/wishlist'));
 
 // Routes without DB requirement
-app.use('/api/products', require('./routes/products'));
+app.use('/api/products', require('../server/routes/products'));
 
 // Admin login (bypasses requireDB so login works even during DB issues)
-app.post('/api/admin/login', require('./routes/admin').loginHandler);
+app.post('/api/admin/login', require('../server/routes/admin').loginHandler);
 
 // All other admin routes (require DB + admin auth)
-app.use('/api/admin', requireDB, require('./routes/admin'));
+app.use('/api/admin', requireDB, require('../server/routes/admin'));
 
 // Health check
 app.get('/api/health', (req, res) => {
