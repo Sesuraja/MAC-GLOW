@@ -26,7 +26,9 @@ app.get('/api/debug-db', (req, res) => {
   res.json({
     hasMongoUri: !!process.env.MONGODB_URI,
     uriPrefix: uri ? uri.substring(0, 40) + '...' : 'not set',
+    uriSuffix: uri ? '...' + uri.substring(uri.length - 30) : 'not set',
     dbState: ['disconnected', 'connected', 'connecting', 'disconnecting'][require('mongoose').connection.readyState] || 'unknown',
+    lastError: connectDB.getLastError ? connectDB.getLastError() : null,
     nodeEnv: process.env.NODE_ENV || 'not set',
     adminEmail: process.env.ADMIN_EMAIL || 'not set'
   });
