@@ -3,7 +3,8 @@ const express = require('express');
 const cors = require('cors');
 const path = require('path');
 const connectDB = require('../server/config/db');
-const { requireDB } = require('../server/middleware/dbCheck');
+const dbCheck = require('../server/middleware/dbCheck');
+const { requireDB } = dbCheck;
 
 const app = express();
 
@@ -15,7 +16,8 @@ app.use(express.static(path.join(__dirname, '..', 'macandglow_website')));
 
 // Connect to MongoDB (skipped if MONGODB_URI is not set)
 if (process.env.MONGODB_URI) {
-  connectDB();
+  const promise = connectDB();
+  dbCheck.setConnectionPromise(promise);
 }
 
 // Debug endpoint to check env vars (no DB required)
