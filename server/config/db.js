@@ -1,11 +1,18 @@
 const mongoose = require('mongoose');
-const dns = require('dns');
-
-dns.setServers(['8.8.8.8', '1.1.1.1']);
 
 const connectDB = async () => {
   try {
-    const conn = await mongoose.connect(process.env.MONGODB_URI);
+    mongoose.connection.on('error', (err) => {
+      console.error('MongoDB runtime error:', err.message);
+    });
+    mongoose.connection.on('disconnected', () => {
+      console.log('MongoDB disconnected');
+    });
+
+    const conn = await mongoose.connect(process.env.MONGODB_URI, {
+      serverSelectionTimeoutMS: 8000,
+      connectTimeoutMS: 8000
+    });
     console.log(`MongoDB Connected: ${conn.connection.host}`);
   } catch (error) {
     console.error(`MongoDB connection error: ${error.message}`);

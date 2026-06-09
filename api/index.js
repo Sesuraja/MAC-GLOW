@@ -18,6 +18,18 @@ if (process.env.MONGODB_URI) {
   connectDB();
 }
 
+// Debug endpoint to check env vars (no DB required)
+app.get('/api/debug-db', (req, res) => {
+  const uri = process.env.MONGODB_URI || '';
+  res.json({
+    hasMongoUri: !!process.env.MONGODB_URI,
+    uriPrefix: uri ? uri.substring(0, 40) + '...' : 'not set',
+    dbState: ['disconnected', 'connected', 'connecting', 'disconnecting'][require('mongoose').connection.readyState] || 'unknown',
+    nodeEnv: process.env.NODE_ENV || 'not set',
+    adminEmail: process.env.ADMIN_EMAIL || 'not set'
+  });
+});
+
 // Routes that need DB
 app.use('/api/auth', requireDB, require('../server/routes/auth'));
 app.use('/api/orders', requireDB, require('../server/routes/orders'));
