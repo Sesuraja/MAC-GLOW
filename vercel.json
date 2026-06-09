@@ -1,9 +1,4 @@
 {
-  "functions": {
-    "api/index.js": {
-      "maxDuration": 10
-    }
-  },
   "builds": [
     {
       "src": "api/index.js",
@@ -11,7 +6,8 @@
       "config": {
         "includeFiles": [
           "macandglow_website/**"
-        ]
+        ],
+        "maxDuration": 10
       }
     }
   ],
