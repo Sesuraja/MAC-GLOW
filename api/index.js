@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
@@ -25,6 +26,12 @@ app.use('/api/wishlist', requireDB, require('./routes/wishlist'));
 
 // Routes without DB requirement
 app.use('/api/products', require('./routes/products'));
+
+// Admin login (bypasses requireDB so login works even during DB issues)
+app.post('/api/admin/login', require('./routes/admin').loginHandler);
+
+// All other admin routes (require DB + admin auth)
+app.use('/api/admin', requireDB, require('./routes/admin'));
 
 // Health check
 app.get('/api/health', (req, res) => {

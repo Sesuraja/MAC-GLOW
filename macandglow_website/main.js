@@ -174,6 +174,10 @@ function updateProfileDropdownContent() {
     } catch(e) {}
   }
   if (isLoggedIn && user) {
+    var adminLink = '';
+    if (user.role === 'admin') {
+      adminLink = '<a href="admin.html" class="dropdown-item" onclick="closeDropdown()">⚙️ Admin Panel</a><div class="dropdown-divider"></div>';
+    }
     dropdown.innerHTML = '<div class="dropdown-header">' +
       '<span class="user-name">' + (user.name || 'User') + '</span>' +
       '<span class="user-email">' + (user.email || '') + '</span>' +
@@ -182,6 +186,7 @@ function updateProfileDropdownContent() {
       '<a href="my-account.html?tab=orders" class="dropdown-item" onclick="closeDropdown()">📦 My Orders</a>' +
       '<a href="wishlist.html" class="dropdown-item" onclick="closeDropdown()">♥️ Wishlist</a>' +
       '<div class="dropdown-divider"></div>' +
+      adminLink +
       '<div class="dropdown-item logout-item" onclick="handleLogout()">🚪 Logout</div>';
   } else {
     dropdown.innerHTML = '<a href="login.html" class="dropdown-item" onclick="closeDropdown()">🔐 Login</a>' +

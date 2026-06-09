@@ -553,6 +553,7 @@ MG_API.login(email, password).then(function(data) {
     userId: data.user.id,
     name: data.user.name,
     email: data.user.email,
+    role: data.user.role || 'user',
     loggedInAt: new Date().toISOString()
     };
     if (rememberMe) {
@@ -617,6 +618,7 @@ MG_API.register(name, email, phone, password).then(function(data) {
     userId: data.user.id,
     name: data.user.name,
     email: data.user.email,
+    role: data.user.role || 'user',
     loggedInAt: new Date().toISOString()
     };
     sessionStorage.setItem('mg_session', JSON.stringify(session));

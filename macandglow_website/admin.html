@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Panel — Mac & Glow</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<style>
+.admin-container{display:flex;min-height:100vh;padding-top:var(--nav-h)}
+.admin-sidebar{width:240px;background:var(--deep);padding:1.5rem;flex-shrink:0}
+.admin-sidebar h3{color:#FAF7F2;font-family:var(--font-serif);font-size:1.2rem;margin-bottom:1.5rem}
+.admin-menu{list-style:none}
+.admin-menu li{margin-bottom:0.3rem}
+.admin-menu a{display:flex;align-items:center;gap:0.8rem;padding:0.7rem 0.8rem;border-radius:var(--radius-sm);color:rgba(250,247,242,0.6);text-decoration:none;font-size:0.82rem;transition:all var(--transition)}
+.admin-menu a:hover,.admin-menu a.active{background:rgba(250,247,242,0.1);color:#FAF7F2}
+.admin-main{flex:1;padding:2rem;background:var(--cream);overflow-y:auto}
+.admin-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:2rem}
+.admin-header h2{font-family:var(--font-serif);font-size:1.8rem;font-weight:300;color:var(--deep)}
+.admin-logout{background:none;border:1px solid #dc2626;color:#dc2626;padding:0.4rem 1rem;border-radius:var(--radius-sm);cursor:pointer;font-size:0.78rem}
+.admin-logout:hover{background:#dc2626;color:white}
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1rem;margin-bottom:2rem}
+.stat-card{background:var(--white);border-radius:var(--radius);padding:1.2rem;border:1px solid var(--border)}
+.stat-card .stat-num{font-family:var(--font-serif);font-size:2rem;color:var(--rose);font-weight:600}
+.stat-card .stat-label{font-size:0.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.1em}
+.admin-section{background:var(--white);border-radius:var(--radius);border:1px solid var(--border);padding:1.5rem;margin-bottom:2rem}
+.admin-section h3{font-family:var(--font-serif);font-size:1.2rem;font-weight:300;margin-bottom:1rem;color:var(--deep)}
+.admin-table{width:100%;border-collapse:collapse;font-size:0.82rem}
+.admin-table th{text-align:left;padding:0.6rem 0.8rem;border-bottom:2px solid var(--border);color:var(--muted);font-size:0.7rem;letter-spacing:0.1em;text-transform:uppercase}
+.admin-table td{padding:0.6rem 0.8rem;border-bottom:1px solid var(--border);color:var(--warm);vertical-align:middle}
+.admin-table tr:hover td{background:var(--cream)}
+.status-badge{padding:2px 10px;border-radius:100px;font-size:0.7rem;font-weight:500;display:inline-block}
+.status-select{padding:4px 8px;border:1px solid var(--border);border-radius:4px;font-family:var(--font-sans);font-size:0.78rem;background:white;cursor:pointer}
+.status-select:focus{border-color:var(--rose);outline:none}
+.action-btn{background:none;border:none;cursor:pointer;font-size:0.85rem;padding:4px 8px;border-radius:4px;transition:all 0.2s}
+.action-btn:hover{background:var(--blush)}
+.action-btn.danger{color:#dc2626}
+.action-btn.danger:hover{background:#fee2e2}
+.action-btn.success{color:#2e7d32}
+.action-btn.success:hover{background:#e8f5e9}
+.admin-tabs{display:flex;gap:0.5rem;margin-bottom:1.5rem;flex-wrap:wrap}
+.admin-tab{padding:0.5rem 1.2rem;border:1px solid var(--border);border-radius:100px;background:none;cursor:pointer;font-size:0.78rem;font-family:var(--font-sans);color:var(--muted);transition:all 0.2s}
+.admin-tab.active{background:var(--deep);color:var(--cream);border-color:var(--deep)}
+.admin-tab:hover:not(.active){border-color:var(--rose);color:var(--rose)}
+.admin-form-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem;margin-bottom:1rem}
+.admin-form-grid .form-group{margin-bottom:0}
+.admin-form-grid .form-group label{font-size:0.7rem}
+.tags-input{display:flex;flex-wrap:wrap;gap:4px;padding:4px;border:1px solid var(--border);border-radius:var(--radius-sm);min-height:38px}
+.tags-input .tag-token{background:var(--blush);padding:2px 8px;border-radius:4px;font-size:0.7rem;display:flex;align-items:center;gap:4px}
+.tags-input .tag-token button{background:none;border:none;cursor:pointer;font-size:0.8rem;padding:0;line-height:1}
+.tags-input input{border:none;flex:1;min-width:80px;padding:4px;font-family:var(--font-sans);font-size:0.78rem;outline:none;background:transparent}
+.empty-state{text-align:center;padding:3rem;color:var(--muted)}
+.empty-state .icon{font-size:3rem;margin-bottom:0.5rem}
+.admin-product-img{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1.2rem}
+.login-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(44,32,24,0.6);display:flex;align-items:center;justify-content:center;z-index:2000}
+.login-overlay .auth-card{max-width:400px;width:90%}
+@media(max-width:768px){.admin-container{flex-direction:column}.admin-sidebar{width:100%;padding:1rem}}
+.admin-search{display:flex;gap:0.5rem;margin-bottom:1rem}
+.admin-search input{flex:1;padding:0.5rem 0.8rem;border:1px solid var(--border);border-radius:var(--radius-sm);font-family:var(--font-sans);font-size:0.82rem;outline:none}
+.admin-search input:focus{border-color:var(--rose)}
+.admin-pagination{display:flex;gap:0.5rem;justify-content:center;margin-top:1rem}
+.admin-pagination button{padding:0.4rem 0.8rem;border:1px solid var(--border);border-radius:4px;background:white;cursor:pointer;font-size:0.78rem}
+.admin-pagination button.active{background:var(--deep);color:white;border-color:var(--deep)}
+.admin-pagination button:hover:not(.active){border-color:var(--rose)}
+.fade-in{animation:fadeIn 0.3s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+/* Auth card styles for admin login */
+.auth-card{max-width:480px;width:100%;background:var(--white);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden}
+.auth-header{padding:2rem 2rem 0.5rem;text-align:center;border-bottom:1px solid var(--border)}
+.auth-header .logo{font-size:1.8rem;display:inline-block;margin-bottom:1rem;font-family:var(--font-serif);letter-spacing:0.2em;color:var(--deep);text-decoration:none}
+.auth-header .logo span{color:var(--rose)}
+.auth-header h1{font-family:var(--font-serif);font-size:1.8rem;font-weight:300;color:var(--deep);margin-bottom:0.5rem}
+.auth-header p{font-size:0.85rem;color:var(--muted)}
+.auth-form{padding:2rem}
+.auth-form .form-group{margin-bottom:1.2rem}
+.auth-form .form-group label{display:block;font-size:0.75rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-bottom:0.5rem}
+.auth-form .form-group input{width:100%;padding:0.85rem 1rem;border:1px solid var(--border);border-radius:var(--radius-sm);font-family:var(--font-sans);font-size:0.9rem;color:var(--deep);background:var(--white);outline:none}
+.auth-form .form-group input:focus{border-color:var(--rose)}
+.auth-btn{width:100%;padding:0.9rem;background:var(--deep);color:var(--cream);border:none;border-radius:var(--radius-sm);font-family:var(--font-sans);font-size:0.85rem;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;transition:background var(--transition)}
+.auth-btn:hover{background:var(--rose)}
+.error-message{background:#f8d7da;color:#721c24;padding:0.75rem;border-radius:var(--radius-sm);font-size:0.8rem;margin-bottom:1rem;display:none}
+</style>
+</head>
+<body>
+
+<nav id="navbar">
+<div class="nav-inner">
+  <a href="index.html" class="logo">MAC<span>&</span>GLOW</a>
+  <div class="nav-actions" style="margin-left:auto">
+    <a href="index.html" class="btn-ghost" style="font-size:0.75rem;gap:4px">← Back to Site</a>
+  </div>
+</div>
+</nav>
+
+<div class="admin-container" id="adminApp">
+<div class="admin-sidebar">
+  <h3>⚙️ Admin Panel</h3>
+  <ul class="admin-menu">
+    <li><a href="#" onclick="showPage('dashboard');return false" id="navDashboard" class="active">📊 Dashboard</a></li>
+    <li><a href="#" onclick="showPage('orders');return false" id="navOrders">📦 Orders</a></li>
+    <li><a href="#" onclick="showPage('products');return false" id="navProducts">🧴 Products</a></li>
+    <li><a href="#" onclick="showPage('contacts');return false" id="navContacts">✉️ Messages</a></li>
+    <li><a href="#" onclick="showPage('newsletter');return false" id="navNewsletter">📧 Subscribers</a></li>
+    <li><a href="#" onclick="showPage('users');return false" id="navUsers">👥 Users</a></li>
+  </ul>
+  <div style="margin-top:2rem;padding-top:1rem;border-top:1px solid rgba(250,247,242,0.1)">
+    <a href="index.html" style="display:flex;align-items:center;gap:0.5rem;color:rgba(250,247,242,0.4);text-decoration:none;font-size:0.75rem">🏠 Back to Site</a>
+  </div>
+</div>
+<div class="admin-main" id="adminMain">
+  <div class="admin-header">
+    <h2 id="pageTitle">Dashboard</h2>
+    <button class="admin-logout" onclick="adminLogout()">🚪 Logout</button>
+  </div>
+  <div id="adminContent"></div>
+</div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+var TOKEN = localStorage.getItem('mg_admin_token') || '';
+
+function adminLogout(){
+  localStorage.removeItem('mg_admin_token');
+  window.location.reload();
+}
+
+function showToast(msg){
+  var t = document.getElementById('toast');
+  if(!t) return;
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(function(){ t.classList.remove('show'); }, 3000);
+}
+
+function adminFetch(endpoint, options){
+  options = options || {};
+  var config = {
+    method: options.method || 'GET',
+    headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + TOKEN }
+  };
+  if(options.body) config.body = JSON.stringify(options.body);
+  return fetch('/api/admin' + endpoint, config).then(function(r){
+    return r.json().then(function(d){
+      if(!r.ok){ throw new Error(d.error || 'Request failed'); }
+      return d;
+    });
+  });
+}
+
+function showPage(page){
+  document.querySelectorAll('.admin-menu a').forEach(function(a){ a.classList.remove('active'); });
+  var navMap = {dashboard:'navDashboard',orders:'navOrders',products:'navProducts',contacts:'navContacts',newsletter:'navNewsletter',users:'navUsers'};
+  var el = document.getElementById(navMap[page]);
+  if(el) el.classList.add('active');
+
+  var titles = {dashboard:'Dashboard',orders:'Orders Management',products:'Products Management',contacts:'Contact Messages',newsletter:'Newsletter Subscribers',users:'User Management'};
+  document.getElementById('pageTitle').textContent = titles[page] || 'Dashboard';
+
+  var fns = {dashboard:loadDashboard,orders:loadOrders,products:loadProducts,contacts:loadContacts,newsletter:loadNewsletter,users:loadUsers};
+  if(fns[page]) fns[page]();
+}
+
+/* ═══ DASHBOARD ═══ */
+function loadDashboard(){
+  var c = document.getElementById('adminContent');
+  c.innerHTML = '<div style="text-align:center;padding:3rem"><div style="font-size:2rem">⏳</div><p>Loading dashboard...</p></div>';
+  adminFetch('/dashboard').then(function(data){
+    var s = data.stats;
+    c.innerHTML = '<div class="stats-grid fade-in">' +
+      '<div class="stat-card"><div class="stat-num">'+s.totalOrders+'</div><div class="stat-label">Total Orders</div></div>' +
+      '<div class="stat-card"><div class="stat-num">₹'+s.totalRevenue.toLocaleString()+'</div><div class="stat-label">Total Revenue</div></div>' +
+      '<div class="stat-card"><div class="stat-num">'+s.totalUsers+'</div><div class="stat-label">Users</div></div>' +
+      '<div class="stat-card"><div class="stat-num">'+s.totalProducts+'</div><div class="stat-label">Products</div></div>' +
+      '<div class="stat-card"><div class="stat-num">'+s.totalContacts+'</div><div class="stat-label">Messages</div></div>' +
+      '<div class="stat-card"><div class="stat-num">'+s.totalNewsletter+'</div><div class="stat-label">Subscribers</div></div>' +
+    '</div>' +
+    '<div class="admin-section fade-in"><h3>📦 Recent Orders</h3>' + renderOrderTable(data.recentOrders) + '</div>' +
+    '<div class="admin-section fade-in"><h3>✉️ Recent Messages</h3>' + renderContactTable(data.recentContacts) + '</div>';
+  }).catch(function(err){
+    c.innerHTML = '<div class="empty-state"><div class="icon">⚠️</div><p>Error: '+err.message+'</p></div>';
+  });
+}
+
+function renderOrderTable(orders){
+  if(!orders || !orders.length) return '<div class="empty-state"><p>No orders yet</p></div>';
+  var h = '<table class="admin-table"><thead><tr><th>Order ID</th><th>Customer</th><th>Total</th><th>Status</th><th>Date</th></tr></thead><tbody>';
+  for(var i=0;i<orders.length;i++){
+    var o = orders[i];
+    h += '<tr><td><strong>'+o.orderId+'</strong></td><td>'+o.customer+'</td><td>₹'+o.total.toLocaleString()+'</td><td><span class="status-badge '+getStatusClass(o.status)+'">'+getStatusText(o.status)+'</span></td><td style="font-size:0.75rem;color:var(--muted)">'+new Date(o.createdAt).toLocaleDateString()+'</td></tr>';
+  }
+  return h + '</tbody></table>';
+}
+
+function renderContactTable(msgs){
+  if(!msgs || !msgs.length) return '<div class="empty-state"><p>No messages</p></div>';
+  var h = '<table class="admin-table"><thead><tr><th>Name</th><th>Subject</th><th>Date</th><th>Read</th></tr></thead><tbody>';
+  for(var i=0;i<msgs.length;i++){
+    var m = msgs[i];
+    h += '<tr><td>'+m.name+'</td><td>'+m.subject+'</td><td style="font-size:0.75rem;color:var(--muted)">'+new Date(m.createdAt).toLocaleDateString()+'</td><td>'+(m.isRead?'✅':'🔴')+'</td></tr>';
+  }
+  return h + '</tbody></table>';
+}
+
+/* ═══ ORDERS ═══ */
+var ordersPage = 1;
+function loadOrders(){
+  var c = document.getElementById('adminContent');
+  c.innerHTML = '<div style="text-align:center;padding:3rem">⏳ Loading orders...</div>';
+  adminFetch('/orders?page='+ordersPage+'&limit=20').then(function(data){
+    var h = '<div class="admin-section fade-in"><h3>All Orders ('+data.total+')</h3>';
+    if(data.orders && data.orders.length){
+      h += '<table class="admin-table"><thead><tr><th>Order ID</th><th>Customer</th><th>Email</th><th>Items</th><th>Total</th><th>Status</th><th>Date</th><th>Action</th></tr></thead><tbody>';
+      for(var i=0;i<data.orders.length;i++){
+        var o = data.orders[i];
+        var itemStr = o.items.map(function(it){ return it.name+' x'+it.qty; }).join(', ');
+        h += '<tr><td><strong>'+o.orderId+'</strong></td><td>'+o.customer+'</td><td style="font-size:0.7rem">'+o.email+'</td><td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="'+itemStr+'">'+itemStr.substring(0,30)+(itemStr.length>30?'...':'')+'</td><td>₹'+o.total.toLocaleString()+'</td><td><span class="status-badge '+getStatusClass(o.status)+'">'+getStatusText(o.status)+'</span></td><td style="font-size:0.7rem">'+new Date(o.createdAt).toLocaleDateString()+'</td><td><select class="status-select" onchange="updateOrderStatus(\''+o._id+'\',this.value)"><option value="">Change</option><option value="confirmed">Confirmed</option><option value="processing">Processing</option><option value="shipped">Shipped</option><option value="out_for_delivery">Out for Delivery</option><option value="delivered">Delivered</option><option value="cancelled">Cancelled</option></select></td></tr>';
+      }
+      h += '</tbody></table>';
+      if(data.pages > 1){
+        h += '<div class="admin-pagination">';
+        for(var p=1;p<=data.pages;p++){
+          h += '<button '+(p===data.page?'class="active"':'')+' onclick="goToOrderPage('+p+')">'+p+'</button>';
+        }
+        h += '</div>';
+      }
+    } else {
+      h += '<div class="empty-state"><div class="icon">📦</div><p>No orders found</p></div>';
+    }
+    h += '</div>';
+    c.innerHTML = h;
+  }).catch(function(err){
+    c.innerHTML = '<div class="empty-state"><div class="icon">⚠️</div><p>Error: '+err.message+'</p></div>';
+  });
+}
+
+function goToOrderPage(p){ ordersPage=p; loadOrders(); }
+
+function updateOrderStatus(id, status){
+  if(!status) return;
+  if(!confirm('Set order status to "'+getStatusText(status)+'"?')) return;
+  adminFetch('/orders/'+id+'/status', { method:'PUT', body:{status:status} }).then(function(){
+    showToast('Order status updated!');
+    loadOrders();
+  }).catch(function(err){
+    showToast(err.message);
+  });
+}
+
+/* ═══ PRODUCTS ═══ */
+function loadProducts(){
+  var c = document.getElementById('adminContent');
+  c.innerHTML = '<div style="text-align:center;padding:3rem">⏳ Loading products...</div>';
+  adminFetch('/products').then(function(data){
+    var h = '<div class="admin-section fade-in"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem"><h3 style="margin:0">All Products ('+data.total+')</h3><button class="btn-primary" style="padding:0.5rem 1.2rem;font-size:0.75rem" onclick="showAddProduct()">+ Add Product</button></div>';
+    if(data.products && data.products.length){
+      h += '<table class="admin-table"><thead><tr><th>ID</th><th>Icon</th><th>Name</th><th>Category</th><th>Price</th><th>MRP</th><th>Badge</th><th>Actions</th></tr></thead><tbody>';
+      for(var i=0;i<data.products.length;i++){
+        var p = data.products[i];
+        h += '<tr><td>'+p.id+'</td><td><div class="admin-product-img" style="background:'+(p.bg||'var(--blush)')+'">'+(p.icon||'🧴')+'</div></td><td><strong>'+p.name+'</strong></td><td>'+p.category+'</td><td>₹'+p.price+'</td><td style="text-decoration:line-through;color:var(--muted)">₹'+(p.mrp||'')+'</td><td>'+(p.badge?'<span class="status-badge" style="background:var(--blush);color:var(--rose)">'+p.badge+'</span>':'')+'</td><td><button class="action-btn" onclick="editProduct('+p.id+')">✏️</button> <button class="action-btn danger" onclick="deleteProduct('+p.id+')">🗑️</button></td></tr>';
+      }
+      h += '</tbody></table>';
+    } else {
+      h += '<div class="empty-state"><div class="icon">🧴</div><p>No products in database. Products are served from static data. Add products here to manage via DB.</p></div>';
+    }
+    h += '</div>';
+    c.innerHTML = h;
+  }).catch(function(err){
+    c.innerHTML = '<div class="empty-state"><div class="icon">⚠️</div><p>Error: '+err.message+'</p></div>';
+  });
+}
+
+function showAddProduct(){
+  var c = document.getElementById('adminContent');
+  c.innerHTML = '<div class="admin-section fade-in"><h3>Add New Product</h3><button class="btn-ghost" onclick="loadProducts()" style="margin-bottom:1rem">← Back</button><form onsubmit="saveProduct(event)"><div class="admin-form-grid"><div class="form-group"><label>Product Name *</label><input type="text" id="pName" required></div><div class="form-group"><label>Category *</label><input type="text" id="pCategory" required placeholder="e.g. serum, Cream, Face Wash"></div><div class="form-group"><label>Price *</label><input type="number" id="pPrice" required min="0"></div><div class="form-group"><label>MRP</label><input type="number" id="pMrp" min="0"></div><div class="form-group"><label>Badge</label><input type="text" id="pBadge" placeholder="Bestseller, New, etc."></div><div class="form-group"><label>Icon (emoji)</label><input type="text" id="pIcon" value="✨"></div><div class="form-group"><label>Background Color</label><input type="text" id="pBg" value="#F0E4D8"></div><div class="form-group"><label>Description</label><input type="text" id="pDesc"></div><div class="form-group"><label>Full Description</label><textarea id="pFullDesc" rows="2"></textarea></div><div class="form-group"><label>Rating</label><input type="number" id="pRating" value="4.5" step="0.1"></div><div class="form-group"><label>Reviews</label><input type="number" id="pReviews" value="0"></div><div class="form-group"><label>Skin Type</label><input type="text" id="pSkin" value="All skin types"></div><div class="form-group"><label>Size</label><input type="text" id="pSize"></div><div class="form-group" style="grid-column:1/-1"><label>Tags (comma separated)</label><input type="text" id="pTags" placeholder="brightening, serum, vitamin-c"></div></div><button type="submit" class="btn-primary">Save Product →</button></form></div>';
+}
+
+function saveProduct(e){
+  e.preventDefault();
+  var tags = document.getElementById('pTags').value.split(',').map(function(t){ return t.trim(); }).filter(Boolean);
+  var body = {
+    name: document.getElementById('pName').value,
+    category: document.getElementById('pCategory').value,
+    price: parseInt(document.getElementById('pPrice').value),
+    mrp: parseInt(document.getElementById('pMrp').value) || undefined,
+    badge: document.getElementById('pBadge').value,
+    icon: document.getElementById('pIcon').value || '✨',
+    bg: document.getElementById('pBg').value || '#F0E4D8',
+    desc: document.getElementById('pDesc').value,
+    fullDesc: document.getElementById('pFullDesc').value,
+    rating: parseFloat(document.getElementById('pRating').value) || 4.5,
+    reviews: parseInt(document.getElementById('pReviews').value) || 0,
+    tags: tags,
+    skin: document.getElementById('pSkin').value || 'All skin types',
+    size: document.getElementById('pSize').value
+  };
+  adminFetch('/products', { method:'POST', body:body }).then(function(){
+    showToast('Product added!');
+    loadProducts();
+  }).catch(function(err){
+    showToast(err.message);
+  });
+}
+
+function editProduct(id){
+  var c = document.getElementById('adminContent');
+  adminFetch('/products').then(function(data){
+    var p = null;
+    for(var i=0;i<data.products.length;i++){ if(data.products[i].id === id){ p=data.products[i]; break; } }
+    if(!p){ showToast('Product not found'); return; }
+    c.innerHTML = '<div class="admin-section fade-in"><h3>Edit Product: '+p.name+'</h3><button class="btn-ghost" onclick="loadProducts()" style="margin-bottom:1rem">← Back</button><form onsubmit="updateProduct(event,'+id+')"><div class="admin-form-grid"><div class="form-group"><label>Product Name</label><input type="text" id="pName" value="'+(p.name||'')+'" required></div><div class="form-group"><label>Category</label><input type="text" id="pCategory" value="'+(p.category||'')+'" required></div><div class="form-group"><label>Price</label><input type="number" id="pPrice" value="'+(p.price||'')+'" required></div><div class="form-group"><label>MRP</label><input type="number" id="pMrp" value="'+(p.mrp||'')+'"></div><div class="form-group"><label>Badge</label><input type="text" id="pBadge" value="'+(p.badge||'')+'"></div><div class="form-group"><label>Icon</label><input type="text" id="pIcon" value="'+(p.icon||'✨')+'"></div><div class="form-group"><label>Bg Color</label><input type="text" id="pBg" value="'+(p.bg||'#F0E4D8')+'"></div><div class="form-group"><label>Description</label><input type="text" id="pDesc" value="'+(p.desc||'')+'"></div><div class="form-group"><label>Full Description</label><textarea id="pFullDesc" rows="2">'+(p.fullDesc||'')+'</textarea></div><div class="form-group"><label>Rating</label><input type="number" id="pRating" value="'+(p.rating||4.5)+'" step="0.1"></div><div class="form-group"><label>Reviews</label><input type="number" id="pReviews" value="'+(p.reviews||0)+'"></div><div class="form-group"><label>Skin Type</label><input type="text" id="pSkin" value="'+(p.skin||'All skin types')+'"></div><div class="form-group"><label>Size</label><input type="text" id="pSize" value="'+(p.size||'')+'"></div><div class="form-group" style="grid-column:1/-1"><label>Tags (comma separated)</label><input type="text" id="pTags" value="'+(p.tags?p.tags.join(', '):'')+'"></div></div><button type="submit" class="btn-primary">Update Product →</button></form></div>';
+  });
+}
+
+function updateProduct(e, id){
+  e.preventDefault();
+  var tags = document.getElementById('pTags').value.split(',').map(function(t){ return t.trim(); }).filter(Boolean);
+  var body = {
+    name: document.getElementById('pName').value,
+    category: document.getElementById('pCategory').value,
+    price: parseInt(document.getElementById('pPrice').value),
+    mrp: parseInt(document.getElementById('pMrp').value) || undefined,
+    badge: document.getElementById('pBadge').value,
+    icon: document.getElementById('pIcon').value || '✨',
+    bg: document.getElementById('pBg').value || '#F0E4D8',
+    desc: document.getElementById('pDesc').value,
+    fullDesc: document.getElementById('pFullDesc').value,
+    rating: parseFloat(document.getElementById('pRating').value) || 4.5,
+    reviews: parseInt(document.getElementById('pReviews').value) || 0,
+    tags: tags,
+    skin: document.getElementById('pSkin').value || 'All skin types',
+    size: document.getElementById('pSize').value
+  };
+  adminFetch('/products/'+id, { method:'PUT', body:body }).then(function(){
+    showToast('Product updated!');
+    loadProducts();
+  }).catch(function(err){ showToast(err.message); });
+}
+
+function deleteProduct(id){
+  if(!confirm('Delete this product?')) return;
+  adminFetch('/products/'+id, { method:'DELETE' }).then(function(){
+    showToast('Product deleted');
+    loadProducts();
+  }).catch(function(err){ showToast(err.message); });
+}
+
+/* ═══ CONTACTS ═══ */
+function loadContacts(){
+  var c = document.getElementById('adminContent');
+  c.innerHTML = '<div style="text-align:center;padding:3rem">⏳ Loading messages...</div>';
+  adminFetch('/contacts').then(function(data){
+    var h = '<div class="admin-section fade-in"><h3>Contact Messages</h3>';
+    if(data.contacts && data.contacts.length){
+      h += '<table class="admin-table"><thead><tr><th>Name</th><th>Email</th><th>Subject</th><th>Message</th><th>Date</th><th>Status</th><th>Actions</th></tr></thead><tbody>';
+      for(var i=0;i<data.contacts.length;i++){
+        var m = data.contacts[i];
+        h += '<tr><td><strong>'+m.name+'</strong></td><td style="font-size:0.7rem">'+m.email+'</td><td>'+m.subject+'</td><td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="'+m.message+'">'+m.message.substring(0,40)+(m.message.length>40?'...':'')+'</td><td style="font-size:0.7rem">'+new Date(m.createdAt).toLocaleDateString()+'</td><td>'+(m.isRead?'✅ Read':'🔴 Unread')+'</td><td>'+(m.isRead?'':'<button class="action-btn success" onclick="markRead(\''+m._id+'\')">✓</button> ')+'<button class="action-btn danger" onclick="deleteContact(\''+m._id+'\')">🗑️</button></td></tr>';
+      }
+      h += '</tbody></table>';
+    } else {
+      h += '<div class="empty-state"><div class="icon">✉️</div><p>No messages yet</p></div>';
+    }
+    h += '</div>';
+    c.innerHTML = h;
+  }).catch(function(err){
+    c.innerHTML = '<div class="empty-state"><div class="icon">⚠️</div><p>Error: '+err.message+'</p></div>';
+  });
+}
+
+function markRead(id){
+  adminFetch('/contacts/'+id+'/read', { method:'PUT' }).then(function(){
+    showToast('Marked as read');
+    loadContacts();
+  }).catch(function(err){ showToast(err.message); });
+}
+
+function deleteContact(id){
+  if(!confirm('Delete this message?')) return;
+  adminFetch('/contacts/'+id, { method:'DELETE' }).then(function(){
+    showToast('Message deleted');
+    loadContacts();
+  }).catch(function(err){ showToast(err.message); });
+}
+
+/* ═══ NEWSLETTER ═══ */
+function loadNewsletter(){
+  var c = document.getElementById('adminContent');
+  c.innerHTML = '<div style="text-align:center;padding:3rem">⏳ Loading subscribers...</div>';
+  adminFetch('/newsletter').then(function(data){
+    var h = '<div class="admin-section fade-in"><h3>Newsletter Subscribers ('+(data.subscribers?data.subscribers.length:0)+')</h3>';
+    if(data.subscribers && data.subscribers.length){
+      h += '<table class="admin-table"><thead><tr><th>Email</th><th>Subscribed Date</th></tr></thead><tbody>';
+      for(var i=0;i<data.subscribers.length;i++){
+        var s = data.subscribers[i];
+        h += '<tr><td><strong>'+s.email+'</strong></td><td style="font-size:0.75rem;color:var(--muted)">'+new Date(s.createdAt).toLocaleString()+'</td></tr>';
+      }
+      h += '</tbody></table>';
+    } else {
+      h += '<div class="empty-state"><div class="icon">📧</div><p>No subscribers yet</p></div>';
+    }
+    h += '</div>';
+    c.innerHTML = h;
+  }).catch(function(err){
+    c.innerHTML = '<div class="empty-state"><div class="icon">⚠️</div><p>Error: '+err.message+'</p></div>';
+  });
+}
+
+/* ═══ USERS ═══ */
+function loadUsers(){
+  var c = document.getElementById('adminContent');
+  c.innerHTML = '<div style="text-align:center;padding:3rem">⏳ Loading users...</div>';
+  adminFetch('/users').then(function(data){
+    var h = '<div class="admin-section fade-in"><h3>All Users ('+(data.users?data.users.length:0)+')</h3>';
+    if(data.users && data.users.length){
+      h += '<table class="admin-table"><thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Role</th><th>Joined</th><th>Action</th></tr></thead><tbody>';
+      for(var i=0;i<data.users.length;i++){
+        var u = data.users[i];
+        h += '<tr><td><strong>'+u.name+'</strong></td><td style="font-size:0.7rem">'+u.email+'</td><td style="font-size:0.7rem">'+(u.phone||'')+'</td><td><span class="status-badge '+(u.role==='admin'?'status-confirmed':'')+'" style="text-transform:uppercase;font-size:0.65rem">'+(u.role||'user')+'</span></td><td style="font-size:0.7rem;color:var(--muted)">'+new Date(u.createdAt).toLocaleDateString()+'</td><td>'+(u.role==='admin'?'—':'<button class="action-btn" onclick="makeAdmin(\''+u._id+'\')">👑 Make Admin</button>')+'</td></tr>';
+      }
+      h += '</tbody></table>';
+    } else {
+      h += '<div class="empty-state"><div class="icon">👥</div><p>No users yet</p></div>';
+    }
+    h += '</div>';
+    c.innerHTML = h;
+  }).catch(function(err){
+    c.innerHTML = '<div class="empty-state"><div class="icon">⚠️</div><p>Error: '+err.message+'</p></div>';
+  });
+}
+
+function makeAdmin(id){
+  if(!confirm('Make this user an admin?')) return;
+  adminFetch('/users/'+id+'/role', { method:'PUT', body:{role:'admin'} }).then(function(){
+    showToast('User is now an admin');
+    loadUsers();
+  }).catch(function(err){ showToast(err.message); });
+}
+
+/* ═══ HELPERS ═══ */
+function getStatusClass(status){
+  var map = {confirmed:'status-confirmed',processing:'status-processing',shipped:'status-shipped','out_for_delivery':'status-shipped',delivered:'status-delivered',cancelled:'status-cancelled'};
+  return map[status] || 'status-confirmed';
+}
+
+function getStatusText(status){
+  var map = {confirmed:'Confirmed',processing:'Processing',shipped:'Shipped','out_for_delivery':'Out for Delivery',delivered:'Delivered',cancelled:'Cancelled'};
+  return map[status] || status || 'Unknown';
+}
+
+/* ═══ SERVER CONNECTIVITY CHECK ═══ */
+function checkServerConnection(callback){
+  fetch('/api/health', { method:'GET', headers:{'Accept':'application/json'} })
+    .then(function(r){ return r.json(); })
+    .then(function(d){ callback(true, d); })
+    .catch(function(){ callback(false); });
+}
+
+/* ═══ INIT ═══ */
+(function init(){
+  var token = localStorage.getItem('mg_token') || sessionStorage.getItem('mg_token');
+  var session = JSON.parse(localStorage.getItem('mg_session') || sessionStorage.getItem('mg_session') || 'null');
+
+  if(token && session && session.role === 'admin'){
+    TOKEN = token;
+    localStorage.setItem('mg_admin_token', token);
+    showPage('dashboard');
+  } else {
+    var loginHtml = '<div class="login-overlay"><div class="auth-card"><div class="auth-header"><a href="index.html" class="logo">MAC<span>&</span>GLOW</a><h1>Admin Login</h1><p>Only authorized admins can access this panel</p></div><div class="auth-form">';
+    loginHtml += '<div id="serverCheck" style="display:none;background:#fff3e0;color:#ef6c00;padding:0.75rem;border-radius:var(--radius-sm);font-size:0.8rem;margin-bottom:1rem"></div>';
+    loginHtml += '<div id="loginError" class="error-message"></div>';
+    loginHtml += '<div class="form-group"><label>Email</label><input type="email" id="adminEmail" placeholder="admin@macandglow.com"></div>';
+    loginHtml += '<div class="form-group"><label>Password</label><input type="password" id="adminPassword" placeholder="Enter password"></div>';
+    loginHtml += '<button class="auth-btn" onclick="handleAdminLogin()">Sign In →</button></div></div></div>';
+    document.getElementById('adminApp').innerHTML = loginHtml;
+
+    checkServerConnection(function(connected, data){
+      if(!connected){
+        document.getElementById('serverCheck').style.display = 'block';
+        document.getElementById('serverCheck').innerHTML = '⚠️ Cannot reach the backend server. Make sure you run <strong>npm start</strong> and access this page via <strong>http://localhost:3000/admin.html</strong> (not by opening the file directly).';
+      }
+    });
+  }
+})();
+
+function handleAdminLogin(){
+  var email = document.getElementById('adminEmail').value.trim();
+  var password = document.getElementById('adminPassword').value;
+  var errDiv = document.getElementById('loginError');
+  if(!email || !password){ errDiv.textContent = 'Please enter email and password'; errDiv.style.display='block'; return; }
+  fetch('/api/admin/login', {
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({email:email,password:password})
+  }).then(function(r){
+    return r.json().then(function(d){
+      if(!r.ok){ throw new Error(d.error || 'Login failed'); }
+      return d;
+    });
+  }).then(function(data){
+    TOKEN = data.token;
+    localStorage.setItem('mg_token', data.token);
+    localStorage.setItem('mg_admin_token', data.token);
+    var session = { userId:data.user.id, name:data.user.name, email:data.user.email, role:'admin', loggedInAt:new Date().toISOString() };
+    localStorage.setItem('mg_session', JSON.stringify(session));
+    showToast('Welcome Admin!');
+    setTimeout(function(){ window.location.reload(); }, 500);
+  }).catch(function(err){
+    if(err.message === 'Failed to fetch'){
+      errDiv.innerHTML = 'Cannot connect to server. Make sure <strong>npm start</strong> is running and access via <strong>http://localhost:3000</strong>';
+    } else {
+      errDiv.textContent = err.message;
+    }
+    errDiv.style.display = 'block';
+  });
+}
+</script>
+
+<script src="data.js"></script>
+<script src="api.js"></script>
+</body>
+</html>

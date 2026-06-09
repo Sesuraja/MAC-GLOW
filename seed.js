@@ -1,6 +1,7 @@
 require('dotenv').config();
 const mongoose = require('mongoose');
 const Product = require('./api/models/Product');
+const User = require('./api/models/User');
 
 const products = [
   { id:1, name:'10% Vita-C Face Serum 30ml', category:'serums', price:299, mrp:499, badge:'Bestseller', icon:'✨', bg:'#F0E4D8', desc:'For Hyperpigmentation & Dull Skin', fullDesc:'Aqua, 3-O-Ethyl Ascorbic Acid, Butylene Glycol...', rating:4.8, reviews:120, tags:['brightening','serum','vitamin-c'], skin:'All skin types', size:'30ml' },
@@ -40,9 +41,27 @@ async function seed() {
     await mongoose.connect(process.env.MONGODB_URI);
     console.log('Connected to MongoDB');
 
+    // Seed products
     await Product.deleteMany({});
     await Product.insertMany(products);
     console.log(`Seeded ${products.length} products`);
+
+    // Seed admin user
+    const adminEmail = 'admin@macandglow.com';
+    const existingAdmin = await User.findOne({ email: adminEmail });
+    if (!existingAdmin) {
+      const UserModel = require('./api/models/User');
+      const admin = new UserModel({
+        name: 'Admin',
+        email: adminEmail,
+        password: 'admin123',
+        role: 'admin'
+      });
+      await admin.save();
+      console.log(`Admin user created: ${adminEmail} / admin123`);
+    } else {
+      console.log(`Admin user already exists: ${adminEmail}`);
+    }
 
     await mongoose.disconnect();
     console.log('Done!');
