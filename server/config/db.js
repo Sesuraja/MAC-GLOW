@@ -1,27 +1,31 @@
 const mongoose = require('mongoose');
 
-let cached = global.mongoose;
+let lastError = null;
 
-if (!cached) {
-  cached = global.mongoose = {
-    conn: null,
-    promise: null
-  };
-}
+const getLastError = () => lastError;
 
-async function connectDB() {
-  if (cached.conn) return cached.conn;
-
-  if (!cached.promise) {
-    cached.promise = mongoose.connect(process.env.MONGODB_URI, {
-      serverSelectionTimeoutMS: 30000,
-      connectTimeoutMS: 30000,
-      socketTimeoutMS: 30000
+const connectDB = async () => {
+  try {
+    mongoose.connection.on('error', (err) => {
+      lastError = err.message;
+      console.error('MongoDB runtime error:', err.message);
     });
-  }
+    mongoose.connection.on('disconnected', () => {
+      console.log('MongoDB disconnected');
+    });
 
-  cached.conn = await cached.promise;
-  return cached.conn;
-}
+    const conn = await mongoose.connect(process.env.MONGODB_URI, {
+      serverSelectionTimeoutMS: 9000,
+      connectTimeoutMS: 9000
+    });
+    console.log(`MongoDB Connected: ${conn.connection.host}`);
+    lastError = null;
+  } catch (error) {
+    lastError = error.message;
+    console.error(`MongoDB connection error: ${error.message}`);
+    console.log('Server will continue without database. Only static routes will work.');
+  }
+};
 
 module.exports = connectDB;
+module.exports.getLastError = getLastError;
