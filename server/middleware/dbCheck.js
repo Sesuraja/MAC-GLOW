@@ -1,21 +1,27 @@
 const mongoose = require('mongoose');
+const connectDB = require('../config/db');
 
-let connectionPromise = null;
 const dbCheck = {
-  setConnectionPromise: (promise) => { connectionPromise = promise; },
   requireDB: async (req, res, next) => {
-    if (mongoose.connection.readyState === 1) {
-      return next();
+    try {
+      if (mongoose.connection.readyState !== 1) {
+        await connectDB();
+      }
+
+      if (mongoose.connection.readyState === 1) {
+        return next();
+      }
+
+      return res.status(503).json({
+        error: 'Database connection unavailable'
+      });
+
+    } catch (err) {
+      return res.status(503).json({
+        error: 'Database connection failed',
+        details: err.message
+      });
     }
-    if (mongoose.connection.readyState === 2 && connectionPromise) {
-      try {
-        await connectionPromise;
-        if (mongoose.connection.readyState === 1) return next();
-      } catch (e) {}
-    }
-    res.status(503).json({
-      error: 'Database not connected. Please set the MONGODB_URI environment variable.'
-    });
   }
 };
 
